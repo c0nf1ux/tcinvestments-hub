@@ -1,0 +1,63 @@
+﻿
+// Add to server.js - News API endpoints
+app.get('/api/news', (req, res) => {
+  const { category } = req.query;
+  
+  const allNews = [
+    {
+      id: 1,
+      title: 'Murders at Karlov Manor Spoiler Season Begins',
+      summary: 'Wizards reveals the first cards from the highly anticipated mystery-themed set.',
+      category: 'mtg',
+      source: 'MTG Official',
+      timestamp: '2 hours ago',
+      impact: 'high',
+      tags: ['spoilers', 'new-set'],
+      priceImpact: [
+        { card: 'Detective Cards', expectedChange: '+15%' }
+      ]
+    },
+    {
+      id: 2,
+      title: 'Pokemon TCG Temporal Forces Set Announced',
+      summary: 'New Pokemon set featuring Paradox Pokemon forms coming March 2025.',
+      category: 'pokemon',
+      source: 'Pokemon Company',
+      timestamp: '4 hours ago',
+      impact: 'high',
+      tags: ['new-set', 'paradox-pokemon']
+    },
+    {
+      id: 3,
+      title: 'Connor McDavid Rookie Card Sells for Record .1M',
+      summary: 'Upper Deck McDavid rookie card breaks hockey records.',
+      category: 'sports',
+      source: 'Sports Card Investor',
+      timestamp: '6 hours ago',
+      impact: 'very-high',
+      tags: ['record-sale', 'hockey']
+    }
+  ];
+
+  const filteredNews = category && category !== 'all' 
+    ? allNews.filter(article => article.category === category)
+    : allNews;
+
+  res.json({
+    articles: filteredNews,
+    totalCount: filteredNews.length,
+    category: category || 'all'
+  });
+});
+
+app.get('/api/news/:id', (req, res) => {
+  // Individual news article endpoint
+  const { id } = req.params;
+  const article = mockNews.find(n => n.id === parseInt(id));
+  
+  if (!article) {
+    return res.status(404).json({ message: 'Article not found' });
+  }
+  
+  res.json(article);
+});

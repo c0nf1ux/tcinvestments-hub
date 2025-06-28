@@ -1,0 +1,95 @@
+﻿.tc-investments-container {
+  padding: 20px;
+  margin: 15px;
+  background: linear-gradient(145deg, var(--magic-dark-gray), var(--magic-charcoal));
+  border-radius: 12px;
+}
+
+.tc-header h2 {
+  color: var(--periwinkle-primary);
+  margin-bottom: 5px;
+}
+
+.tc-header p {
+  color: var(--periwinkle-secondary);
+  margin-bottom: 20px;
+}
+
+.upload-zone {
+  border: 2px dashed var(--periwinkle-secondary);
+  border-radius: 8px;
+  padding: 40px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.upload-zone:hover {
+  border-color: var(--periwinkle-primary);
+  background: rgba(197, 197, 255, 0.05);
+}
+
+.file-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.file-name {
+  color: var(--periwinkle-light);
+  font-weight: bold;
+}
+
+.file-size {
+  color: var(--periwinkle-secondary);
+  font-size: 0.9em;
+}
+
+.upload-prompt span {
+  color: var(--periwinkle-primary);
+  font-size: 1.2em;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.upload-prompt p {
+  color: var(--periwinkle-secondary);
+  margin: 0;
+}
+
+.process-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.tc-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 15px;
+  background: var(--magic-black);
+  border-radius: 8px;
+  border: 1px solid var(--periwinkle-dark);
+}
+
+.stat-label {
+  display: block;
+  color: var(--periwinkle-secondary);
+  font-size: 0.9em;
+  margin-bottom: 5px;
+}
+
+.stat-value {
+  display: block;
+  color: var(--periwinkle-light);
+  font-size: 1.3em;
+  font-weight: bold;
+}

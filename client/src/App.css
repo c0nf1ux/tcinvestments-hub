@@ -1,0 +1,30 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Inter', 'Segoe UI', 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #000000;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.App {
+  text-align: left;
+}
+
+/* Periwinkle theme colors */
+:root {
+  --periwinkle-primary: #CCCCFF;
+  --periwinkle-secondary: #9999FF;
+  --periwinkle-accent: #6666FF;
+  --background: #000000;
+  --surface: #1a1a1a;
+  --text: #FFFFFF;
+  --success: #66FF66;
+  --warning: #FFD700;
+  --error: #FF6666;
+}

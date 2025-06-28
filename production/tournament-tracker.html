@@ -1,0 +1,751 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> BRAINSTORM Tournament & News Hub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #1a1a2e 30%, #CCCCFF 100%);
+            color: #CCCCFF;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 0;
+            border-bottom: 3px solid #CCCCFF;
+            box-shadow: 0 5px 15px rgba(204, 204, 255, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo { 
+            font-size: 2rem; 
+            font-weight: bold; 
+            color: #CCCCFF;
+            text-shadow: 0 0 15px #CCCCFF;
+        }
+
+        .platform-badge {
+            background: linear-gradient(135deg, #CCCCFF, #9999FF);
+            color: #000;
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1rem;
+            text-transform: uppercase;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 3rem 0;
+            margin-bottom: 3rem;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #CCCCFF, #FFFFFF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px #CCCCFF;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: #B3B3FF;
+            margin-bottom: 2rem;
+        }
+
+        .tabs-container {
+            display: flex;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 15px;
+            padding: 0.5rem;
+            margin-bottom: 2rem;
+            border: 2px solid #CCCCFF;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 1rem 2rem;
+            background: transparent;
+            color: #B3B3FF;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #CCCCFF, #9999FF);
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(204, 204, 255, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .main-article {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #CCCCFF;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .main-article:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(204, 204, 255, 0.4);
+            border-color: #FFFFFF;
+        }
+
+        .article-image {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, #CCCCFF, #9999FF);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #000;
+        }
+
+        .article-content {
+            padding: 2rem;
+        }
+
+        .article-category {
+            background: #CCCCFF;
+            color: #000;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .article-title {
+            font-size: 1.8rem;
+            color: #CCCCFF;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .article-excerpt {
+            color: #B3B3FF;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #9999CC;
+        }
+
+        .side-articles {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .side-article {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid #CCCCFF;
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .side-article:hover {
+            background: rgba(0, 0, 0, 0.8);
+            transform: translateX(5px);
+            border-color: #FFFFFF;
+        }
+
+        .side-article-title {
+            color: #CCCCFF;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .side-article-excerpt {
+            color: #B3B3FF;
+            font-size: 0.9rem;
+        }
+
+        .tournament-section {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #CCCCFF;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #CCCCFF;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            text-shadow: 0 0 10px #CCCCFF;
+        }
+
+        .tournament-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tournament-card {
+            background: rgba(204, 204, 255, 0.1);
+            border: 2px solid #CCCCFF;
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .tournament-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(204, 204, 255, 0.3);
+            background: rgba(204, 204, 255, 0.2);
+        }
+
+        .tournament-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .tournament-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #CCCCFF;
+        }
+
+        .tournament-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .status-live {
+            background: #FF6B6B;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        .status-upcoming {
+            background: #CCCCFF;
+            color: #000;
+        }
+
+        .status-completed {
+            background: #666;
+            color: #CCC;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .tournament-details {
+            color: #B3B3FF;
+            margin-bottom: 1rem;
+        }
+
+        .tournament-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid #CCCCFF;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #CCCCFF;
+            text-shadow: 0 0 5px #CCCCFF;
+        }
+
+        .stat-label {
+            color: #B3B3FF;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        .meta-section {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #CCCCFF;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .meta-card {
+            background: rgba(204, 204, 255, 0.1);
+            border: 2px solid #CCCCFF;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .meta-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #CCCCFF;
+            text-shadow: 0 0 10px #CCCCFF;
+        }
+
+        .meta-title {
+            font-size: 1.2rem;
+            color: #CCCCFF;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .meta-percentage {
+            font-size: 2rem;
+            color: #CCCCFF;
+            font-weight: bold;
+            text-shadow: 0 0 10px #CCCCFF;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 100;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #CCCCFF, #9999FF);
+            color: #000;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-left: 1rem;
+        }
+
+        .nav-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(204, 204, 255, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs-container {
+                flex-direction: column;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .navigation {
+                position: static;
+                text-align: center;
+                margin-top: 2rem;
+            }
+            
+            .nav-button {
+                margin: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo"> BRAINSTORM</div>
+            <div class="platform-badge">Tournament & News Hub</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="hero-section">
+            <h1 class="hero-title"> Tournament & News Hub</h1>
+            <p class="hero-subtitle">Live Tournament Tracking  Breaking News  Meta Analysis  847 Events</p>
+        </div>
+
+        <div class="tabs-container">
+            <button class="tab active" onclick="showTab('news')"> Breaking News</button>
+            <button class="tab" onclick="showTab('tournaments')"> Live Tournaments</button>
+            <button class="tab" onclick="showTab('meta')"> Meta Analysis</button>
+            <button class="tab" onclick="showTab('results')"> Results</button>
+        </div>
+
+        <div id="news" class="tab-content active">
+            <div class="news-grid">
+                <div class="main-article" onclick="openArticle('main')">
+                    <div class="article-image"></div>
+                    <div class="article-content">
+                        <div class="article-category">BREAKING</div>
+                        <h2 class="article-title">Major Tournament Meta Shift: New Archetype Dominates Day 1</h2>
+                        <p class="article-excerpt">
+                            A surprising new deck archetype has emerged at the Pro Tour, completely reshaping the competitive landscape. 
+                            Early results show a 73% win rate against established meta decks, sending shockwaves through the community.
+                        </p>
+                        <div class="article-meta">
+                            <span> 2 hours ago</span>
+                            <span> 15,247 views</span>
+                            <span> 342 comments</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="side-articles">
+                    <div class="side-article" onclick="openArticle('side1')">
+                        <div class="side-article-title"> Regional Championship Results</div>
+                        <div class="side-article-excerpt">Complete coverage of this weekend's regional events and emerging strategies...</div>
+                    </div>
+
+                    <div class="side-article" onclick="openArticle('side2')">
+                        <div class="side-article-title"> Market Alert: Price Spikes</div>
+                        <div class="side-article-excerpt">Key cards see 300%+ increases following tournament performance...</div>
+                    </div>
+
+                    <div class="side-article" onclick="openArticle('side3')">
+                        <div class="side-article-title"> Meta Predictions</div>
+                        <div class="side-article-excerpt">AI analysis predicts next week's optimal deck choices...</div>
+                    </div>
+
+                    <div class="side-article" onclick="openArticle('side4')">
+                        <div class="side-article-title"> Quick Results</div>
+                        <div class="side-article-excerpt">Live updates from ongoing matches and instant analysis...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tournaments" class="tab-content">
+            <div class="tournament-section">
+                <h2 class="section-title"> Live Tournaments (847 Active Events)</h2>
+                <div class="tournament-grid">
+                    <div class="tournament-card">
+                        <div class="tournament-header">
+                            <div class="tournament-name">Pro Tour Championship</div>
+                            <div class="tournament-status status-live">LIVE</div>
+                        </div>
+                        <div class="tournament-details">
+                             Las Vegas, NV   Round 12 of 16
+                        </div>
+                        <div class="tournament-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">847</div>
+                                <div class="stat-label">Players</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">$75K</div>
+                                <div class="stat-label">Prize Pool</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">73%</div>
+                                <div class="stat-label">New Meta</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tournament-card">
+                        <div class="tournament-header">
+                            <div class="tournament-name">Regional Championship</div>
+                            <div class="tournament-status status-live">LIVE</div>
+                        </div>
+                        <div class="tournament-details">
+                             Tokyo, Japan   Round 8 of 12
+                        </div>
+                        <div class="tournament-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">324</div>
+                                <div class="stat-label">Players</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">$25K</div>
+                                <div class="stat-label">Prize Pool</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">65%</div>
+                                <div class="stat-label">Win Rate</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tournament-card">
+                        <div class="tournament-header">
+                            <div class="tournament-name">Weekly Challenge</div>
+                            <div class="tournament-status status-upcoming">UPCOMING</div>
+                        </div>
+                        <div class="tournament-details">
+                             Online Event   Starts in 2 hours
+                        </div>
+                        <div class="tournament-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">1,247</div>
+                                <div class="stat-label">Registered</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">$10K</div>
+                                <div class="stat-label">Prize Pool</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">Open</div>
+                                <div class="stat-label">Entry</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tournament-card">
+                        <div class="tournament-header">
+                            <div class="tournament-name">Store Championship</div>
+                            <div class="tournament-status status-completed">COMPLETED</div>
+                        </div>
+                        <div class="tournament-details">
+                             London, UK   Winner: Alex Thompson
+                        </div>
+                        <div class="tournament-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">64</div>
+                                <div class="stat-label">Players</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">$2K</div>
+                                <div class="stat-label">Prize Pool</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">8-0</div>
+                                <div class="stat-label">Record</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="meta" class="tab-content">
+            <div class="meta-section">
+                <h2 class="section-title"> Current Meta Analysis</h2>
+                <div class="meta-grid">
+                    <div class="meta-card">
+                        <div class="meta-icon"></div>
+                        <div class="meta-title">Aggro Decks</div>
+                        <div class="meta-percentage">28.4%</div>
+                    </div>
+
+                    <div class="meta-card">
+                        <div class="meta-icon"></div>
+                        <div class="meta-title">Control Decks</div>
+                        <div class="meta-percentage">23.7%</div>
+                    </div>
+
+                    <div class="meta-card">
+                        <div class="meta-icon"></div>
+                        <div class="meta-title">Midrange</div>
+                        <div class="meta-percentage">31.2%</div>
+                    </div>
+
+                    <div class="meta-card">
+                        <div class="meta-icon"></div>
+                        <div class="meta-title">Combo</div>
+                        <div class="meta-percentage">16.7%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="results" class="tab-content">
+            <div class="tournament-section">
+                <h2 class="section-title"> Recent Tournament Results</h2>
+                <div class="tournament-grid">
+                    <div class="tournament-card">
+                        <div class="tournament-header">
+                            <div class="tournament-name">Pro Tour Finals</div>
+                            <div class="tournament-status status-completed">COMPLETED</div>
+                        </div>
+                        <div class="tournament-details">
+                             Winner: Maria Rodriguez  New Archetype Victory
+                        </div>
+                        <div class="tournament-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">$50K</div>
+                                <div class="stat-label">Prize</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">9-1</div>
+                                <div class="stat-label">Record</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">73%</div>
+                                <div class="stat-label">Win Rate</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tournament-card">
+                        <div class="tournament-header">
+                            <div class="tournament-name">Grand Prix Seattle</div>
+                            <div class="tournament-status status-completed">COMPLETED</div>
+                        </div>
+                        <div class="tournament-details">
+                             Winner: David Chen  Control Mastery
+                        </div>
+                        <div class="tournament-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">$25K</div>
+                                <div class="stat-label">Prize</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">8-2</div>
+                                <div class="stat-label">Record</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">67%</div>
+                                <div class="stat-label">Win Rate</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-button" onclick="goBack()"> Dashboard</button>
+        <button class="nav-button" onclick="openAllPlatforms()"> All Platforms</button>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function openArticle(articleId) {
+            const articles = {
+                'main': {
+                    title: 'Major Tournament Meta Shift: New Archetype Dominates Day 1',
+                    content: 'This groundbreaking deck combines elements from multiple strategies, creating a hybrid approach that has caught the entire field off guard. Professional players are scrambling to adapt their sideboards and strategies for the remaining rounds.'
+                },
+                'side1': {
+                    title: 'Regional Championship Results',
+                    content: 'Complete analysis of regional performance data showing clear trends in deck selection and win rates across different formats.'
+                },
+                'side2': {
+                    title: 'Market Alert: Price Spikes',
+                    content: 'Key cards seeing massive price increases following tournament performance. Investment opportunities and market predictions included.'
+                },
+                'side3': {
+                    title: 'Meta Predictions',
+                    content: 'AI-powered analysis of current trends suggests upcoming shifts in competitive play patterns and optimal deck choices.'
+                },
+                'side4': {
+                    title: 'Quick Results',
+                    content: 'Real-time updates from ongoing matches with instant win/loss tracking and statistical analysis.'
+                }
+            };
+
+            const article = articles[articleId];
+            alert(` ${article.title}\n\n${article.content}\n\n Professional tournament coverage!\n Superior news integration!`);
+        }
+
+        function goBack() {
+            window.location.href = 'trading-dashboard.html';
+        }
+
+        function openAllPlatforms() {
+            window.location.href = 'index.html';
+        }
+
+        window.addEventListener('load', () => {
+            console.log(' Tournament & News Hub Loaded');
+            console.log(' Features: Live tournaments, breaking news, meta analysis, results');
+            console.log(' Theme: Periwinkle & Black applied');
+            console.log(' Status: 847 live tournaments tracked');
+            console.log(' Meta: Real-time archetype performance analysis');
+        });
+    </script>
+</body>
+</html>

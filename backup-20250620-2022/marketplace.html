@@ -1,0 +1,929 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> BRAINSTORM Marketplace</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: #161b22;
+            border-bottom: 1px solid #30363d;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo { 
+            font-size: 1.5rem; 
+            font-weight: bold; 
+            color: #58a6ff;
+            text-decoration: none;
+        }
+        
+        .nav-items { display: flex; gap: 2rem; align-items: center; }
+        
+        .nav-item {
+            color: #8b949e;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            color: #e6edf3;
+            background: #21262d;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #21262d;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #238636, #2ea043, #58a6ff, #7c3aed, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 400% 400%;
+            animation: gradient 4s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #8b949e;
+            margin-bottom: 1rem;
+        }
+
+        .destroyer-badge {
+            display: inline-block;
+            background: #da3633;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .marketplace-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .stat-card:hover::before {
+            left: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: #238636;
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #238636;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #8b949e;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-change {
+            font-size: 0.9rem;
+            color: #238636;
+            font-weight: bold;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+        }
+
+        .sidebar {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 1.5rem;
+            height: fit-content;
+        }
+
+        .marketplace-area {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .search-filters {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-weight: bold;
+            color: #e6edf3;
+            font-size: 0.9rem;
+        }
+
+        .filter-input, .filter-select {
+            padding: 0.8rem;
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #e6edf3;
+            font-size: 0.9rem;
+        }
+
+        .filter-input:focus, .filter-select:focus {
+            outline: none;
+            border-color: #238636;
+            box-shadow: 0 0 0 2px rgba(35, 134, 54, 0.3);
+        }
+
+        .price-range {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .marketplace-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #21262d;
+            border-radius: 8px;
+        }
+
+        .view-options {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .view-btn {
+            padding: 0.5rem;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #8b949e;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .view-btn:hover, .view-btn.active {
+            border-color: #238636;
+            color: #238636;
+        }
+
+        .sort-select {
+            padding: 0.5rem 1rem;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #e6edf3;
+        }
+
+        .listings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .listing-card {
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .listing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            border-color: #238636;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: white;
+            position: relative;
+        }
+
+        .condition-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #238636;
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ffd700;
+            color: #000;
+            padding: 0.3rem 0.6rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .listing-info {
+            padding: 1.5rem;
+        }
+
+        .listing-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #e6edf3;
+            font-size: 1.1rem;
+        }
+
+        .listing-details {
+            color: #8b949e;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .price-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .current-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #238636;
+        }
+
+        .original-price {
+            color: #8b949e;
+            text-decoration: line-through;
+            font-size: 0.9rem;
+        }
+
+        .discount {
+            background: #da3633;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .seller-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #30363d;
+        }
+
+        .seller-avatar {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #58a6ff, #7c3aed);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .seller-name {
+            font-size: 0.9rem;
+            color: #8b949e;
+        }
+
+        .seller-rating {
+            color: #ffd700;
+            font-size: 0.8rem;
+        }
+
+        .listing-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .btn-buy {
+            background: linear-gradient(135deg, #238636, #2ea043);
+            color: white;
+        }
+
+        .btn-cart {
+            background: linear-gradient(135deg, #58a6ff, #7c3aed);
+            color: white;
+        }
+
+        .btn-watch {
+            background: #161b22;
+            color: #8b949e;
+            border: 1px solid #30363d;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .sell-section {
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .sell-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #238636, #2ea043);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .sell-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(35, 134, 54, 0.3);
+        }
+
+        .fee-comparison {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .fee-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .fee-table th,
+        .fee-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .fee-table th {
+            background: #21262d;
+            font-weight: bold;
+        }
+
+        .brainstorm-fee {
+            color: #238636;
+            font-weight: bold;
+        }
+
+        .competitor-fee {
+            color: #da3633;
+        }
+
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .marketplace-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .marketplace-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .marketplace-toolbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .listings-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="trading-dashboard.html" class="logo"> BRAINSTORM</a>
+        <div class="nav-items">
+            <a href="trading-dashboard.html" class="nav-item">Dashboard</a>
+            <a href="advanced-search.html" class="nav-item">Search</a>
+            <a href="sports-card-hub.html" class="nav-item">Sports Cards</a>
+            <a href="ai-deck-builder.html" class="nav-item">Deck Builder</a>
+            <a href="market-analytics.html" class="nav-item">Market</a>
+            <a href="community-platform.html" class="nav-item">Community</a>
+            <a href="#" class="nav-item active">Marketplace</a>
+        </div>
+        <div class="user-profile">
+            <span></span>
+            <span>Heath Davis</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1> Marketplace</h1>
+            <p class="subtitle">Buy & Sell Trading Cards with 5% Fees</p>
+            <div class="destroyer-badge">TCGPLAYER DESTROYER</div>
+        </div>
+
+        <div class="marketplace-stats">
+            <div class="stat-card">
+                <span class="stat-icon"></span>
+                <div class="stat-value">$847M</div>
+                <div class="stat-label">Total Sales</div>
+                <div class="stat-change">+24.7% vs TCGPlayer</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon"></span>
+                <div class="stat-value">2.4M</div>
+                <div class="stat-label">Active Listings</div>
+                <div class="stat-change">+18.3% this month</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon"></span>
+                <div class="stat-value">5%</div>
+                <div class="stat-label">Our Fees</div>
+                <div class="stat-change">vs 12.9% TCGPlayer</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon"></span>
+                <div class="stat-value">24h</div>
+                <div class="stat-label">Instant Payouts</div>
+                <div class="stat-change">vs 14 days TCGPlayer</div>
+            </div>
+        </div>
+
+        <div class="main-layout">
+            <div class="sidebar">
+                <div class="sell-section">
+                    <h3 style="margin-bottom: 1rem; text-align: center;"> Sell Your Cards</h3>
+                    <button class="sell-btn" onclick="startSelling()">
+                         List Cards for Sale
+                    </button>
+                    <p style="text-align: center; margin-top: 0.5rem; color: #8b949e; font-size: 0.9rem;">
+                        Only 5% fees  Instant payouts
+                    </p>
+                </div>
+
+                <div class="section-header">
+                    <h3> Filters</h3>
+                </div>
+
+                <div class="search-filters">
+                    <div class="filter-group">
+                        <div class="filter-label">Card Name</div>
+                        <input type="text" class="filter-input" placeholder="Search cards...">
+                    </div>
+
+                    <div class="filter-group">
+                        <div class="filter-label">Game/Sport</div>
+                        <select class="filter-select">
+                            <option>All Categories</option>
+                            <option>Magic: The Gathering</option>
+                            <option>Pokemon</option>
+                            <option>Yu-Gi-Oh!</option>
+                            <option>Baseball Cards</option>
+                            <option>Basketball Cards</option>
+                            <option>Football Cards</option>
+                            <option>Hockey Cards</option>
+                            <option>Soccer Cards</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <div class="filter-label">Condition</div>
+                        <select class="filter-select">
+                            <option>Any Condition</option>
+                            <option>Mint</option>
+                            <option>Near Mint</option>
+                            <option>Excellent</option>
+                            <option>Good</option>
+                            <option>Fair</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <div class="filter-label">Price Range</div>
+                        <div class="price-range">
+                            <input type="number" class="filter-input" placeholder="Min">
+                            <input type="number" class="filter-input" placeholder="Max">
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <div class="filter-label">Grading</div>
+                        <select class="filter-select">
+                            <option>Any Grade</option>
+                            <option>PSA 10</option>
+                            <option>PSA 9</option>
+                            <option>BGS 10</option>
+                            <option>BGS 9.5</option>
+                            <option>SGC 10</option>
+                            <option>CGC 10</option>
+                            <option>Ungraded</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <div class="filter-label">Seller Location</div>
+                        <select class="filter-select">
+                            <option>Worldwide</option>
+                            <option>United States</option>
+                            <option>Canada</option>
+                            <option>Europe</option>
+                            <option>Asia</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="fee-comparison">
+                    <h4 style="margin-bottom: 1rem; text-align: center;"> Fee Comparison</h4>
+                    <table class="fee-table">
+                        <tr>
+                            <th>Platform</th>
+                            <th>Fees</th>
+                        </tr>
+                        <tr>
+                            <td><strong>BRAINSTORM</strong></td>
+                            <td class="brainstorm-fee">5.0%</td>
+                        </tr>
+                        <tr>
+                            <td>TCGPlayer</td>
+                            <td class="competitor-fee">12.9%</td>
+                        </tr>
+                        <tr>
+                            <td>eBay</td>
+                            <td class="competitor-fee">13.25%</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="marketplace-area">
+                <div class="marketplace-toolbar">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <span style="color: #8b949e;">2,847 results</span>
+                        <div class="view-options">
+                            <button class="view-btn active"></button>
+                            <button class="view-btn"></button>
+                        </div>
+                    </div>
+                    
+                    <select class="sort-select">
+                        <option>Price: Low to High</option>
+                        <option>Price: High to Low</option>
+                        <option>Newest First</option>
+                        <option>Best Match</option>
+                        <option>Ending Soon</option>
+                    </select>
+                </div>
+
+                <div class="listings-grid">
+                    <div class="listing-card" onclick="viewListing('Black Lotus')">
+                        <div class="card-image">
+                            
+                            <div class="condition-badge">NM</div>
+                            <div class="featured-badge">FEATURED</div>
+                        </div>
+                        <div class="listing-info">
+                            <div class="listing-title">Black Lotus</div>
+                            <div class="listing-details">Alpha  Rare  Power Nine</div>
+                            <div class="price-section">
+                                <div>
+                                    <div class="current-price">$42,850</div>
+                                    <div class="original-price">$45,000</div>
+                                </div>
+                                <div class="discount">-5%</div>
+                            </div>
+                            <div class="seller-info">
+                                <div class="seller-avatar">SC</div>
+                                <div class="seller-name">SportsCards_Pro</div>
+                                <div class="seller-rating"> 4.9 (3.1K)</div>
+                            </div>
+                            <div class="listing-actions">
+                                <button class="action-btn btn-buy">Buy Now</button>
+                                <button class="action-btn btn-cart">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="listing-card" onclick="viewListing('LeBron James')">
+                        <div class="card-image">
+                            
+                            <div class="condition-badge">BGS 9.5</div>
+                        </div>
+                        <div class="listing-info">
+                            <div class="listing-title">LeBron James Rookie</div>
+                            <div class="listing-details">2003 Topps Chrome  BGS 9.5</div>
+                            <div class="price-section">
+                                <div>
+                                    <div class="current-price">$125,000</div>
+                                </div>
+                            </div>
+                            <div class="seller-info">
+                                <div class="seller-avatar">BC</div>
+                                <div class="seller-name">BasketballCards</div>
+                                <div class="seller-rating"> 4.8 (1.8K)</div>
+                            </div>
+                            <div class="listing-actions">
+                                <button class="action-btn btn-buy">Buy Now</button>
+                                <button class="action-btn btn-watch">Watch</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="listing-card" onclick="viewListing('Mox Sapphire')">
+                        <div class="card-image">
+                            
+                            <div class="condition-badge">LP</div>
+                        </div>
+                        <div class="listing-info">
+                            <div class="listing-title">Mox Sapphire</div>
+                            <div class="listing-details">Alpha  Rare  Power Nine</div>
+                            <div class="price-section">
+                                <div>
+                                    <div class="current-price">$8,940</div>
+                                </div>
+                            </div>
+                            <div class="seller-info">
+                                <div class="seller-avatar">VM</div>
+                                <div class="seller-name">VintageMox</div>
+                                <div class="seller-rating"> 4.9 (967)</div>
+                            </div>
+                            <div class="listing-actions">
+                                <button class="action-btn btn-buy">Buy Now</button>
+                                <button class="action-btn btn-cart">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="listing-card" onclick="viewListing('Tom Brady')">
+                        <div class="card-image">
+                            
+                            <div class="condition-badge">PSA 9</div>
+                        </div>
+                        <div class="listing-info">
+                            <div class="listing-title">Tom Brady Rookie</div>
+                            <div class="listing-details">2000 Playoff Contenders  PSA 9</div>
+                            <div class="price-section">
+                                <div>
+                                    <div class="current-price">$38,200</div>
+                                </div>
+                            </div>
+                            <div class="seller-info">
+                                <div class="seller-avatar">FB</div>
+                                <div class="seller-name">FootballBeast</div>
+                                <div class="seller-rating"> 4.7 (1.5K)</div>
+                            </div>
+                            <div class="listing-actions">
+                                <button class="action-btn btn-buy">Buy Now</button>
+                                <button class="action-btn btn-watch">Watch</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="listing-card" onclick="viewListing('Wayne Gretzky')">
+                        <div class="card-image">
+                            
+                            <div class="condition-badge">SGC 10</div>
+                        </div>
+                        <div class="listing-info">
+                            <div class="listing-title">Wayne Gretzky Rookie</div>
+                            <div class="listing-details">1979 O-Pee-Chee  SGC 10</div>
+                            <div class="price-section">
+                                <div>
+                                    <div class="current-price">$94,500</div>
+                                    <div class="original-price">$98,000</div>
+                                </div>
+                                <div class="discount">-4%</div>
+                            </div>
+                            <div class="seller-info">
+                                <div class="seller-avatar">HC</div>
+                                <div class="seller-name">HockeyCards_CA</div>
+                                <div class="seller-rating"> 4.8 (2.2K)</div>
+                            </div>
+                            <div class="listing-actions">
+                                <button class="action-btn btn-buy">Buy Now</button>
+                                <button class="action-btn btn-cart">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Marketplace functionality
+        function startSelling() {
+            console.log(' Opening seller dashboard...');
+            alert(' Seller Dashboard Opening!\n\n Upload card photos\n Set your prices\n Only 5% fees (vs 12.9% TCGPlayer)\n Instant payouts (vs 14 days)\n Integrated with your portfolio\n\nStart listing your cards now!');
+        }
+
+        function viewListing(cardName) {
+            console.log(`Viewing listing: ${cardName}`);
+            alert(` Viewing ${cardName}\n\n Detailed card information\n High-resolution photos\n Seller verification\n Secure payment processing\n Buyer protection included\n\nProceed to purchase?`);
+        }
+
+        // Filter functionality
+        document.querySelectorAll('.filter-input, .filter-select').forEach(filter => {
+            filter.addEventListener('change', function() {
+                console.log(`Filter changed: ${this.value}`);
+                // In real implementation, this would update the listings
+            });
+        });
+
+        // View options
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                console.log('View changed');
+            });
+        });
+
+        // Sort functionality
+        document.querySelector('.sort-select').addEventListener('change', function() {
+            console.log(`Sorting by: ${this.value}`);
+            // In real implementation, this would re-sort the listings
+        });
+
+        // Action buttons
+        document.querySelectorAll('.action-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const action = this.textContent.trim();
+                
+                if (action === 'Buy Now') {
+                    console.log('Processing instant purchase...');
+                    alert(' Instant Purchase\n\n Secure payment processing\n Buyer protection included\n Item shipped within 24h\n 5% marketplace fee\n\nProceed to checkout?');
+                } else if (action === 'Add to Cart') {
+                    console.log('Adding to cart...');
+                    alert(' Added to Cart!\n\nItem added successfully. Continue shopping or proceed to checkout.');
+                } else if (action === 'Watch') {
+                    console.log('Adding to watchlist...');
+                    this.textContent = ' Watching';
+                    this.style.background = '#238636';
+                    this.style.color = 'white';
+                    alert(' Added to Watchlist!\n\nYou\'ll be notified of price changes and new listings.');
+                }
+            });
+        });
+
+        // Simulate real-time updates
+        function updateListingStats() {
+            const statValues = document.querySelectorAll('.stat-value');
+            statValues.forEach((stat, index) => {
+                if (Math.random() > 0.9) {
+                    stat.style.transform = 'scale(1.1)';
+                    stat.style.color = '#238636';
+                    setTimeout(() => {
+                        stat.style.transform = 'scale(1)';
+                        stat.style.color = '';
+                    }, 300);
+                }
+            });
+        }
+
+        // Start real-time updates
+        setInterval(updateListingStats, 5000);
+
+        // Initialize
+        console.log(' Marketplace - TCGPlayer Destroyer Loaded');
+        console.log(' Total Sales: $847M (vs TCGPlayer)');
+        console.log(' Active Listings: 2.4M cards available');
+        console.log(' Fees: 5% (vs 12.9% TCGPlayer)');
+        console.log(' Payouts: Instant (vs 14 days TCGPlayer)');
+        console.log(' Target: 1.5M+ TCGPlayer users for capture');
+        console.log(' Superior features: Lower fees, instant payouts, integrated platform');
+    </script>
+</body>
+</html>

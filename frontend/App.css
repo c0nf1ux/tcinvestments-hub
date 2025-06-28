@@ -1,0 +1,233 @@
+/* Brainstorm - Professional Robinhood Style */
+:root {
+  --rh-green: #00C805;
+  --rh-red: #FF5733;
+  --rh-bg: #000000;
+  --rh-card: #1C1C1E;
+  --rh-gray: #48484A;
+  --rh-light-gray: #8E8E93;
+  --rh-white: #FFFFFF;
+  --rh-gold: #FFD700;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+  background: var(--rh-bg);
+  color: var(--rh-white);
+  line-height: 1.4;
+  overflow-x: hidden;
+}
+
+.app {
+  min-height: 100vh;
+  background: var(--rh-bg);
+}
+
+/* Status Bar */
+.status-bar {
+  height: 44px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  font-size: 17px;
+  font-weight: 600;
+  background: var(--rh-bg);
+}
+
+.time {
+  color: var(--rh-white);
+}
+
+.status-icons {
+  color: var(--rh-white);
+}
+
+/* Header */
+.header {
+  padding: 10px 20px 20px;
+  background: var(--rh-bg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.investing-label {
+  font-size: 32px;
+  font-weight: 300;
+  color: var(--rh-white);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--rh-green);
+  border-radius: 50%;
+}
+
+.header-right {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.earn-button {
+  background: var(--rh-gold);
+  color: var(--rh-bg);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Portfolio Section */
+.portfolio-section {
+  padding: 0 20px 30px;
+  text-align: center;
+}
+
+.portfolio-value {
+  font-size: 48px;
+  font-weight: 300;
+  color: var(--rh-white);
+  margin-bottom: 8px;
+}
+
+.portfolio-change {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 16px;
+  color: var(--rh-green);
+}
+
+.change-arrow {
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 8px solid var(--rh-green);
+}
+
+/* Chart */
+.chart-container {
+  padding: 20px;
+  height: 300px;
+}
+
+.price-chart {
+  width: 100%;
+  height: 200px;
+  margin-bottom: 20px;
+}
+
+.chart-controls {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.chart-control {
+  background: var(--rh-gray);
+  border: none;
+  color: var(--rh-white);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.chart-control.active {
+  background: var(--rh-green);
+  color: var(--rh-bg);
+}
+
+/* Buying Power */
+.buying-power {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid var(--rh-gray);
+}
+
+.buying-power-label {
+  font-size: 17px;
+  color: var(--rh-white);
+}
+
+.buying-power-value {
+  color: var(--rh-green);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chevron-right {
+  width: 8px;
+  height: 8px;
+  border-top: 2px solid var(--rh-light-gray);
+  border-right: 2px solid var(--rh-light-gray);
+  transform: rotate(45deg);
+}
+
+/* Cards Section */
+.cards-section {
+  padding: 20px;
+}
+
+.section-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--rh-white);
+  margin-bottom: 20px;
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--rh-bg);
+  border-top: 1px solid var(--rh-gray);
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0 34px;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  cursor: pointer;
+  color: var(--rh-light-gray);
+}
+
+.nav-item.active {
+  color: var(--rh-white);
+}
+
+.nav-icon {
+  font-size: 24px;
+}
+

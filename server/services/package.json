@@ -1,0 +1,20 @@
+﻿{
+  "name": "cardhood-ai-platform",
+  "version": "3.0.0",
+  "description": "AI-Powered Trading Card Investment Platform",
+  "main": "server.js",
+  "scripts": {
+    "server": "node server/server.js",
+    "client": "cd client && npm start",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "dependencies": {
+    "@tensorflow/tfjs-node": "^4.10.0",
+    "natural": "^6.5.0",
+    "brain.js": "^2.0.0",
+    "axios": "^1.6.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.0",
+    "ws": "^8.14.0"
+  }
+}

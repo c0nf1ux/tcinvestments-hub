@@ -1,0 +1,1197 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> BRAINSTORM AI Deck Builder</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            background: #161b22;
+            border-bottom: 1px solid #30363d;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo { 
+            font-size: 1.5rem; 
+            font-weight: bold; 
+            color: #58a6ff;
+            text-decoration: none;
+        }
+        
+        .nav-items { display: flex; gap: 2rem; align-items: center; }
+        
+        .nav-item {
+            color: #8b949e;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            color: #e6edf3;
+            background: #21262d;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #21262d;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 300% 300%;
+            animation: gradient 3s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #8b949e;
+            margin-bottom: 1rem;
+        }
+
+        .destroyer-badge {
+            display: inline-block;
+            background: #da3633;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .sidebar {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 1.5rem;
+            height: fit-content;
+        }
+
+        .deck-area {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 2rem;
+            min-height: 800px;
+        }
+
+        .ai-panel {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 1.5rem;
+            height: fit-content;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .format-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .format-btn {
+            padding: 0.8rem;
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #e6edf3;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .format-btn:hover {
+            border-color: #58a6ff;
+            background: rgba(88, 166, 255, 0.1);
+        }
+
+        .format-btn.active {
+            border-color: #238636;
+            background: rgba(35, 134, 54, 0.15);
+            color: #238636;
+        }
+
+        .search-section {
+            margin-bottom: 2rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.8rem;
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #e6edf3;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #58a6ff;
+            box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.3);
+        }
+
+        .search-filters {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .filter-select {
+            padding: 0.6rem;
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #e6edf3;
+            font-size: 0.9rem;
+        }
+
+        .card-results {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .card-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem;
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            cursor: grab;
+            transition: all 0.2s;
+        }
+
+        .card-item:hover {
+            border-color: #58a6ff;
+            background: rgba(88, 166, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .card-item:active {
+            cursor: grabbing;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .card-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-name {
+            font-weight: bold;
+            margin-bottom: 0.2rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-details {
+            color: #8b949e;
+            font-size: 0.8rem;
+        }
+
+        .card-cost {
+            background: #ffd700;
+            color: #000;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .deck-builder {
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            height: 100%;
+        }
+
+        .deck-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 1rem;
+            background: #21262d;
+            border-radius: 8px;
+            border: 1px solid #30363d;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #58a6ff;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-label {
+            color: #8b949e;
+            font-size: 0.9rem;
+        }
+
+        .deck-list {
+            background: #0d1117;
+            border-radius: 8px;
+            padding: 1.5rem;
+            min-height: 400px;
+            border: 2px dashed #30363d;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .deck-list.drag-over {
+            border-color: #58a6ff;
+            background: rgba(88, 166, 255, 0.05);
+        }
+
+        .drop-hint {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #8b949e;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .drop-hint.hidden {
+            display: none;
+        }
+
+        .deck-card {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.6rem;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            margin-bottom: 0.3rem;
+            position: relative;
+        }
+
+        .deck-card:hover {
+            border-color: #da3633;
+        }
+
+        .card-quantity {
+            background: #238636;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .remove-card {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #da3633;
+            color: white;
+            border: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.7rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .deck-card:hover .remove-card {
+            opacity: 1;
+        }
+
+        .mana-curve {
+            margin-top: 2rem;
+        }
+
+        .curve-chart {
+            display: flex;
+            align-items: end;
+            gap: 0.3rem;
+            height: 100px;
+            margin-bottom: 1rem;
+            padding: 0 1rem;
+        }
+
+        .curve-bar {
+            flex: 1;
+            background: linear-gradient(to top, #58a6ff, #7c3aed);
+            border-radius: 3px 3px 0 0;
+            position: relative;
+            min-height: 5px;
+            transition: all 0.3s;
+        }
+
+        .curve-bar:hover {
+            background: linear-gradient(to top, #4299e1, #9333ea);
+        }
+
+        .curve-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            color: #8b949e;
+        }
+
+        .curve-value {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            color: #e6edf3;
+            font-weight: bold;
+        }
+
+        .ai-suggestions {
+            margin-bottom: 2rem;
+        }
+
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem;
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .suggestion-item:hover {
+            border-color: #238636;
+            background: rgba(35, 134, 54, 0.1);
+        }
+
+        .ai-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7c3aed, #ec4899);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .suggestion-text {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+
+        .suggestion-reason {
+            color: #8b949e;
+            font-size: 0.8rem;
+            margin-top: 0.2rem;
+        }
+
+        .deck-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #238636, #2ea043);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #58a6ff, #7c3aed);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #da3633, #e5484d);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .commander-section {
+            margin-bottom: 2rem;
+        }
+
+        .commander-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, #ffd700, #ffb347);
+            color: #000;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .commander-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #8b5cf6, #ef4444);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .commander-info h3 {
+            margin-bottom: 0.3rem;
+        }
+
+        .commander-details {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .deck-export {
+            margin-top: 1rem;
+        }
+
+        .export-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #8b949e;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .export-btn:hover {
+            border-color: #58a6ff;
+            color: #e6edf3;
+        }
+
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .deck-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .format-selector {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-filters {
+                grid-template-columns: 1fr;
+            }
+            
+            .deck-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="trading-dashboard.html" class="logo"> BRAINSTORM</a>
+        <div class="nav-items">
+            <a href="trading-dashboard.html" class="nav-item">Dashboard</a>
+            <a href="advanced-search.html" class="nav-item">Search</a>
+            <a href="sports-card-hub.html" class="nav-item">Sports Cards</a>
+            <a href="#" class="nav-item active">Deck Builder</a>
+            <a href="#" class="nav-item">Market</a>
+        </div>
+        <div class="user-profile">
+            <span></span>
+            <span>Heath Davis</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1> AI Deck Builder</h1>
+            <p class="subtitle">Advanced AI-Powered Deck Construction & Optimization</p>
+            <div class="destroyer-badge">EDHREC DESTROYER</div>
+        </div>
+
+        <div class="format-selector">
+            <div class="format-btn active" data-format="commander">Commander/EDH</div>
+            <div class="format-btn" data-format="standard">Standard</div>
+            <div class="format-btn" data-format="modern">Modern</div>
+        </div>
+
+        <div class="main-layout">
+            <!-- Card Search Sidebar -->
+            <div class="sidebar">
+                <div class="section-header">
+                    <h3> Card Search</h3>
+                </div>
+
+                <div class="search-section">
+                    <input type="text" class="search-input" placeholder="Search for cards..." id="cardSearch">
+                    
+                    <div class="search-filters">
+                        <select class="filter-select" id="typeFilter">
+                            <option value="">Any Type</option>
+                            <option value="creature">Creature</option>
+                            <option value="instant">Instant</option>
+                            <option value="sorcery">Sorcery</option>
+                            <option value="enchantment">Enchantment</option>
+                            <option value="artifact">Artifact</option>
+                            <option value="planeswalker">Planeswalker</option>
+                        </select>
+                        
+                        <select class="filter-select" id="colorFilter">
+                            <option value="">Any Color</option>
+                            <option value="white">White</option>
+                            <option value="blue">Blue</option>
+                            <option value="black">Black</option>
+                            <option value="red">Red</option>
+                            <option value="green">Green</option>
+                            <option value="colorless">Colorless</option>
+                        </select>
+                        
+                        <select class="filter-select" id="costFilter">
+                            <option value="">Any Cost</option>
+                            <option value="0">0 Mana</option>
+                            <option value="1">1 Mana</option>
+                            <option value="2">2 Mana</option>
+                            <option value="3">3 Mana</option>
+                            <option value="4">4 Mana</option>
+                            <option value="5+">5+ Mana</option>
+                        </select>
+                        
+                        <select class="filter-select" id="rarityFilter">
+                            <option value="">Any Rarity</option>
+                            <option value="common">Common</option>
+                            <option value="uncommon">Uncommon</option>
+                            <option value="rare">Rare</option>
+                            <option value="mythic">Mythic</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="card-results" id="cardResults">
+                    <!-- Sample Cards -->
+                    <div class="card-item" draggable="true" data-card="Lightning Bolt" data-cost="1" data-type="instant">
+                        <div class="card-icon"></div>
+                        <div class="card-info">
+                            <div class="card-name">Lightning Bolt</div>
+                            <div class="card-details">Instant  Red</div>
+                        </div>
+                        <div class="card-cost">1</div>
+                    </div>
+
+                    <div class="card-item" draggable="true" data-card="Sol Ring" data-cost="1" data-type="artifact">
+                        <div class="card-icon"></div>
+                        <div class="card-info">
+                            <div class="card-name">Sol Ring</div>
+                            <div class="card-details">Artifact</div>
+                        </div>
+                        <div class="card-cost">1</div>
+                    </div>
+
+                    <div class="card-item" draggable="true" data-card="Counterspell" data-cost="2" data-type="instant">
+                        <div class="card-icon"></div>
+                        <div class="card-info">
+                            <div class="card-name">Counterspell</div>
+                            <div class="card-details">Instant  Blue</div>
+                        </div>
+                        <div class="card-cost">2</div>
+                    </div>
+
+                    <div class="card-item" draggable="true" data-card="Llanowar Elves" data-cost="1" data-type="creature">
+                        <div class="card-icon"></div>
+                        <div class="card-info">
+                            <div class="card-name">Llanowar Elves</div>
+                            <div class="card-details">Creature  Elf</div>
+                        </div>
+                        <div class="card-cost">1</div>
+                    </div>
+
+                    <div class="card-item" draggable="true" data-card="Wrath of God" data-cost="4" data-type="sorcery">
+                        <div class="card-icon"></div>
+                        <div class="card-info">
+                            <div class="card-name">Wrath of God</div>
+                            <div class="card-details">Sorcery  White</div>
+                        </div>
+                        <div class="card-cost">4</div>
+                    </div>
+
+                    <div class="card-item" draggable="true" data-card="Demonic Tutor" data-cost="2" data-type="sorcery">
+                        <div class="card-icon"></div>
+                        <div class="card-info">
+                            <div class="card-name">Demonic Tutor</div>
+                            <div class="card-details">Sorcery  Black</div>
+                        </div>
+                        <div class="card-cost">2</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Deck Builder Area -->
+            <div class="deck-area">
+                <div class="deck-builder">
+                    <div class="commander-section">
+                        <div class="section-header">
+                            <h3> Commander</h3>
+                            <span style="color: #8b949e;">Select your commander</span>
+                        </div>
+                        
+                        <div class="commander-card">
+                            <div class="commander-icon"></div>
+                            <div class="commander-info">
+                                <h3>Atraxa, Praetors' Voice</h3>
+                                <div class="commander-details">Legendary Creature  Angel Horror  WUBG</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="deck-stats">
+                        <div class="stat-box">
+                            <div class="stat-value" id="deckCount">0</div>
+                            <div class="stat-label">Cards</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="avgCost">0.0</div>
+                            <div class="stat-label">Avg. CMC</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="creatureCount">0</div>
+                            <div class="stat-label">Creatures</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="landCount">0</div>
+                            <div class="stat-label">Lands</div>
+                        </div>
+                    </div>
+
+                    <div class="deck-list" id="deckList">
+                        <div class="drop-hint" id="dropHint">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;"></div>
+                            <p>Drag cards here to build your deck</p>
+                            <p style="font-size: 0.9rem; opacity: 0.7; margin-top: 0.5rem;">
+                                AI will analyze and provide recommendations
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mana-curve">
+                        <h4 style="margin-bottom: 1rem;"> Mana Curve Analysis</h4>
+                        <div class="curve-chart" id="manaCurve">
+                            <div class="curve-bar" style="height: 20%;">
+                                <div class="curve-label">0</div>
+                                <div class="curve-value">2</div>
+                            </div>
+                            <div class="curve-bar" style="height: 60%;">
+                                <div class="curve-label">1</div>
+                                <div class="curve-value">6</div>
+                            </div>
+                            <div class="curve-bar" style="height: 80%;">
+                                <div class="curve-label">2</div>
+                                <div class="curve-value">8</div>
+                            </div>
+                            <div class="curve-bar" style="height: 70%;">
+                                <div class="curve-label">3</div>
+                                <div class="curve-value">7</div>
+                            </div>
+                            <div class="curve-bar" style="height: 50%;">
+                                <div class="curve-label">4</div>
+                                <div class="curve-value">5</div>
+                            </div>
+                            <div class="curve-bar" style="height: 40%;">
+                                <div class="curve-label">5</div>
+                                <div class="curve-value">4</div>
+                            </div>
+                            <div class="curve-bar" style="height: 30%;">
+                                <div class="curve-label">6+</div>
+                                <div class="curve-value">3</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="deck-actions">
+                        <button class="action-btn btn-primary" onclick="optimizeDeck()">
+                             AI Optimize
+                        </button>
+                        <button class="action-btn btn-secondary" onclick="analyzeDeck()">
+                             Analyze
+                        </button>
+                        <button class="action-btn btn-danger" onclick="clearDeck()">
+                             Clear Deck
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Recommendations Panel -->
+            <div class="ai-panel">
+                <div class="section-header">
+                    <h3> AI Recommendations</h3>
+                </div>
+
+                <div class="ai-suggestions">
+                    <div class="suggestion-item" onclick="addSuggestedCard('Rhystic Study')">
+                        <div class="ai-icon"></div>
+                        <div>
+                            <div class="suggestion-text">Add Rhystic Study</div>
+                            <div class="suggestion-reason">Card draw synergy with commander</div>
+                        </div>
+                    </div>
+
+                    <div class="suggestion-item" onclick="addSuggestedCard('Cyclonic Rift')">
+                        <div class="ai-icon"></div>
+                        <div>
+                            <div class="suggestion-text">Add Cyclonic Rift</div>
+                            <div class="suggestion-reason">Board control for mid-game</div>
+                        </div>
+                    </div>
+
+                    <div class="suggestion-item" onclick="addSuggestedCard('Smothering Tithe')">
+                        <div class="ai-icon"></div>
+                        <div>
+                            <div class="suggestion-text">Add Smothering Tithe</div>
+                            <div class="suggestion-reason">Ramp and mana fixing</div>
+                        </div>
+                    </div>
+
+                    <div class="suggestion-item" onclick="addSuggestedCard('Teferi\'s Protection')">
+                        <div class="ai-icon"></div>
+                        <div>
+                            <div class="suggestion-text">Add Teferi's Protection</div>
+                            <div class="suggestion-reason">Ultimate protection spell</div>
+                        </div>
+                    </div>
+
+                    <div class="suggestion-item" onclick="addSuggestedCard('Command Tower')">
+                        <div class="ai-icon"></div>
+                        <div>
+                            <div class="suggestion-text">Add Command Tower</div>
+                            <div class="suggestion-reason">Perfect mana base for 4-color</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h3> Deck Analysis</h3>
+                </div>
+
+                <div class="ai-suggestions">
+                    <div style="padding: 1rem; background: #21262d; border-radius: 8px; margin-bottom: 1rem;">
+                        <h4 style="color: #238636; margin-bottom: 0.5rem;"> Strengths</h4>
+                        <p style="font-size: 0.9rem; color: #8b949e;">Strong early game ramp and card advantage</p>
+                    </div>
+
+                    <div style="padding: 1rem; background: #21262d; border-radius: 8px; margin-bottom: 1rem;">
+                        <h4 style="color: #ffd700; margin-bottom: 0.5rem;"> Improvements</h4>
+                        <p style="font-size: 0.9rem; color: #8b949e;">Need more removal spells for late game</p>
+                    </div>
+
+                    <div style="padding: 1rem; background: #21262d; border-radius: 8px;">
+                        <h4 style="color: #58a6ff; margin-bottom: 0.5rem;"> Meta Score</h4>
+                        <p style="font-size: 0.9rem; color: #8b949e;">87/100 - Highly competitive build</p>
+                    </div>
+                </div>
+
+                <div class="deck-export">
+                    <button class="export-btn" onclick="exportDeck('mtgo')"> Export to MTGO</button>
+                    <button class="export-btn" onclick="exportDeck('arena')"> Export to Arena</button>
+                    <button class="export-btn" onclick="exportDeck('text')"> Export as Text</button>
+                    <button class="export-btn" onclick="saveDeck()"> Save Deck</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentFormat = 'commander';
+        let deckList = [];
+        let draggedCard = null;
+
+        // Format Selection
+        document.querySelectorAll('.format-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.format-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentFormat = this.dataset.format;
+                updateDeckConstraints();
+            });
+        });
+
+        function updateDeckConstraints() {
+            console.log(`Format changed to: ${currentFormat}`);
+            // Update deck building rules based on format
+            if (currentFormat === 'commander') {
+                // 100 card singleton format
+            } else if (currentFormat === 'standard') {
+                // 60 card minimum, 4-of allowed
+            } else if (currentFormat === 'modern') {
+                // 60 card minimum, 4-of allowed, larger card pool
+            }
+        }
+
+        // Drag and Drop Functionality
+        document.querySelectorAll('.card-item').forEach(card => {
+            card.addEventListener('dragstart', function(e) {
+                draggedCard = {
+                    name: this.dataset.card,
+                    cost: parseInt(this.dataset.cost),
+                    type: this.dataset.type,
+                    element: this.cloneNode(true)
+                };
+                console.log(`Dragging: ${draggedCard.name}`);
+            });
+        });
+
+        const deckListElement = document.getElementById('deckList');
+        const dropHint = document.getElementById('dropHint');
+
+        deckListElement.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('drag-over');
+        });
+
+        deckListElement.addEventListener('dragleave', function(e) {
+            if (!this.contains(e.relatedTarget)) {
+                this.classList.remove('drag-over');
+            }
+        });
+
+        deckListElement.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+            
+            if (draggedCard) {
+                addCardToDeck(draggedCard);
+                draggedCard = null;
+            }
+        });
+
+        function addCardToDeck(card) {
+            // Check if card already exists
+            const existingCard = deckList.find(c => c.name === card.name);
+            
+            if (existingCard) {
+                if (currentFormat === 'commander' && existingCard.quantity >= 1) {
+                    alert('Commander format allows only 1 copy of each card (except basic lands)');
+                    return;
+                } else if (currentFormat !== 'commander' && existingCard.quantity >= 4) {
+                    alert('Maximum 4 copies allowed');
+                    return;
+                }
+                existingCard.quantity++;
+            } else {
+                deckList.push({
+                    name: card.name,
+                    cost: card.cost,
+                    type: card.type,
+                    quantity: 1
+                });
+            }
+
+            updateDeckDisplay();
+            updateDeckStats();
+            hideDropHint();
+            generateAIRecommendations();
+        }
+
+        function updateDeckDisplay() {
+            const deckContainer = document.getElementById('deckList');
+            
+            // Clear existing cards (keep drop hint)
+            const existingCards = deckContainer.querySelectorAll('.deck-card');
+            existingCards.forEach(card => card.remove());
+
+            // Add all deck cards
+            deckList.forEach(card => {
+                const deckCard = document.createElement('div');
+                deckCard.className = 'deck-card';
+                deckCard.innerHTML = `
+                    <div class="card-quantity">${card.quantity}</div>
+                    <div class="card-icon">${getCardIcon(card.type)}</div>
+                    <div class="card-info">
+                        <div class="card-name">${card.name}</div>
+                        <div class="card-details">${card.type}  ${card.cost} mana</div>
+                    </div>
+                    <button class="remove-card" onclick="removeCardFromDeck('${card.name}')"></button>
+                `;
+                deckContainer.appendChild(deckCard);
+            });
+        }
+
+        function getCardIcon(type) {
+            const icons = {
+                'instant': '',
+                'sorcery': '',
+                'creature': '',
+                'artifact': '',
+                'enchantment': '',
+                'planeswalker': '',
+                'land': ''
+            };
+            return icons[type] || '';
+        }
+
+        function removeCardFromDeck(cardName) {
+            const cardIndex = deckList.findIndex(c => c.name === cardName);
+            if (cardIndex > -1) {
+                if (deckList[cardIndex].quantity > 1) {
+                    deckList[cardIndex].quantity--;
+                } else {
+                    deckList.splice(cardIndex, 1);
+                }
+                updateDeckDisplay();
+                updateDeckStats();
+                
+                if (deckList.length === 0) {
+                    showDropHint();
+                }
+            }
+        }
+
+        function updateDeckStats() {
+            const totalCards = deckList.reduce((sum, card) => sum + card.quantity, 0);
+            const totalCost = deckList.reduce((sum, card) => sum + (card.cost * card.quantity), 0);
+            const avgCost = totalCards > 0 ? (totalCost / totalCards).toFixed(1) : 0;
+            const creatures = deckList.filter(card => card.type === 'creature').reduce((sum, card) => sum + card.quantity, 0);
+            const lands = deckList.filter(card => card.type === 'land').reduce((sum, card) => sum + card.quantity, 0);
+
+            document.getElementById('deckCount').textContent = totalCards;
+            document.getElementById('avgCost').textContent = avgCost;
+            document.getElementById('creatureCount').textContent = creatures;
+            document.getElementById('landCount').textContent = lands;
+
+            updateManaCurve();
+        }
+
+        function updateManaCurve() {
+            const curve = [0, 0, 0, 0, 0, 0, 0]; // 0, 1, 2, 3, 4, 5, 6+
+            
+            deckList.forEach(card => {
+                const cost = Math.min(card.cost, 6);
+                curve[cost] += card.quantity;
+            });
+
+            const maxCount = Math.max(...curve);
+            const curveBars = document.querySelectorAll('.curve-bar');
+            
+            curveBars.forEach((bar, index) => {
+                const height = maxCount > 0 ? (curve[index] / maxCount) * 100 : 5;
+                bar.style.height = `${Math.max(height, 5)}%`;
+                bar.querySelector('.curve-value').textContent = curve[index];
+            });
+        }
+
+        function hideDropHint() {
+            dropHint.classList.add('hidden');
+        }
+
+        function showDropHint() {
+            dropHint.classList.remove('hidden');
+        }
+
+        function generateAIRecommendations() {
+            // AI would analyze current deck and suggest improvements
+            console.log('AI analyzing deck composition...');
+            console.log(`Current deck: ${deckList.length} unique cards`);
+            
+            // Simulate AI analysis
+            setTimeout(() => {
+                console.log('AI recommendations updated based on current meta');
+            }, 1000);
+        }
+
+        function addSuggestedCard(cardName) {
+            const suggestedCards = {
+                'Rhystic Study': { cost: 3, type: 'enchantment' },
+                'Cyclonic Rift': { cost: 2, type: 'instant' },
+                'Smothering Tithe': { cost: 4, type: 'enchantment' },
+                'Teferi\'s Protection': { cost: 3, type: 'instant' },
+                'Command Tower': { cost: 0, type: 'land' }
+            };
+
+            const card = suggestedCards[cardName];
+            if (card) {
+                addCardToDeck({
+                    name: cardName,
+                    cost: card.cost,
+                    type: card.type
+                });
+                console.log(`AI suggested card added: ${cardName}`);
+            }
+        }
+
+        function optimizeDeck() {
+            console.log(' AI optimizing deck...');
+            alert(' AI Optimization Complete!\n\n Added 3 ramp spells for better curve\n Suggested 2 removal spells\n Improved mana base efficiency\n Meta score increased to 92/100');
+        }
+
+        function analyzeDeck() {
+            console.log(' Analyzing deck composition...');
+            alert(' Deck Analysis Results:\n\n Strengths:\n- Strong early game presence\n- Good card advantage engines\n- Solid mana curve\n\n Weaknesses:\n- Light on removal\n- Could use more card draw\n- Vulnerable to board wipes\n\n Recommendations:\n- Add 2-3 removal spells\n- Include more card draw\n- Consider board protection');
+        }
+
+        function clearDeck() {
+            if (confirm('Are you sure you want to clear the entire deck?')) {
+                deckList = [];
+                updateDeckDisplay();
+                updateDeckStats();
+                showDropHint();
+                console.log('Deck cleared');
+            }
+        }
+
+        function exportDeck(format) {
+            console.log(`Exporting deck to ${format}...`);
+            
+            if (format === 'text') {
+                let deckText = 'Commander: Atraxa, Praetors\' Voice\n\n';
+                deckList.forEach(card => {
+                    deckText += `${card.quantity} ${card.name}\n`;
+                });
+                
+                const blob = new Blob([deckText], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'deck_list.txt';
+                a.click();
+                URL.revokeObjectURL(url);
+            } else {
+                alert(`Exporting to ${format.toUpperCase()}...\nDeck exported successfully!`);
+            }
+        }
+
+        function saveDeck() {
+            console.log(' Saving deck to BRAINSTORM cloud...');
+            alert(' Deck saved successfully!\n\nDeck: "Atraxa Control"\nFormat: Commander\nCards: ' + deckList.reduce((sum, card) => sum + card.quantity, 0) + '\nSaved to your BRAINSTORM account.');
+        }
+
+        // Card search functionality
+        document.getElementById('cardSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            console.log(`Searching for: ${searchTerm}`);
+            // In real implementation, this would query card databases
+        });
+
+        // Initialize
+        updateDeckConstraints();
+        updateDeckStats();
+        
+        console.log(' AI Deck Builder - EDHREC Destroyer Loaded');
+        console.log(' Advanced AI recommendations active');
+        console.log(' Real-time deck analysis enabled');
+        console.log(' Target: 2M+ EDHREC users for capture');
+        console.log(' Features: Drag & drop, mana curve analysis, AI optimization');
+    </script>
+</body>
+</html>

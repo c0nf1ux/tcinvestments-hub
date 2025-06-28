@@ -1,0 +1,915 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> BRAINSTORM Sports Card Hub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: #161b22;
+            border-bottom: 1px solid #30363d;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo { 
+            font-size: 1.5rem; 
+            font-weight: bold; 
+            color: #58a6ff;
+            text-decoration: none;
+        }
+        
+        .nav-items { display: flex; gap: 2rem; align-items: center; }
+        
+        .nav-item {
+            color: #8b949e;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            color: #e6edf3;
+            background: #21262d;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #21262d;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 300% 300%;
+            animation: gradient 3s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #8b949e;
+            margin-bottom: 1rem;
+        }
+
+        .destroyer-badge {
+            display: inline-block;
+            background: #da3633;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .sports-selector {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .sport-option {
+            text-align: center;
+            padding: 2rem 1rem;
+            background: #161b22;
+            border: 2px solid #30363d;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sport-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .sport-option:hover::before {
+            left: 100%;
+        }
+
+        .sport-option:hover {
+            border-color: #58a6ff;
+            background: rgba(88, 166, 255, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .sport-option.active {
+            border-color: #238636;
+            background: rgba(35, 134, 54, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .sport-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .sport-name {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .sport-stats {
+            color: #8b949e;
+            font-size: 0.9rem;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .search-section {
+            grid-column: 1 / -1;
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .search-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .search-field label {
+            color: #e6edf3;
+            font-weight: 500;
+        }
+
+        .search-input, .search-select {
+            padding: 0.8rem;
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #e6edf3;
+            font-size: 1rem;
+        }
+
+        .search-input:focus, .search-select:focus {
+            outline: none;
+            border-color: #58a6ff;
+            box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.3);
+        }
+
+        .search-button {
+            background: linear-gradient(135deg, #238636, #2ea043);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            align-self: end;
+        }
+
+        .search-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(35, 134, 54, 0.3);
+        }
+
+        .trending-cards {
+            margin-bottom: 2rem;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card-item {
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .card-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            border-color: #58a6ff;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: white;
+            position: relative;
+        }
+
+        .card-grade {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ffd700;
+            color: #000;
+            padding: 0.3rem 0.6rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .card-info {
+            padding: 1.5rem;
+        }
+
+        .card-name {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #e6edf3;
+            font-size: 1.1rem;
+        }
+
+        .card-details {
+            color: #8b949e;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .card-price-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #30363d;
+        }
+
+        .current-price {
+            font-weight: bold;
+            color: #238636;
+            font-size: 1.3rem;
+        }
+
+        .price-change {
+            font-size: 0.9rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 15px;
+        }
+
+        .price-up { 
+            color: #238636; 
+            background: rgba(35, 134, 54, 0.15);
+        }
+
+        .price-down { 
+            color: #da3633; 
+            background: rgba(218, 54, 51, 0.15);
+        }
+
+        .market-overview {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .market-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 1.5rem;
+            background: #21262d;
+            border-radius: 8px;
+            border: 1px solid #30363d;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #58a6ff;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #8b949e;
+            font-size: 0.9rem;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-scan {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-grade {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+        }
+
+        .btn-sell {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .grading-info {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .grading-services {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .grading-service {
+            text-align: center;
+            padding: 1rem;
+            background: #21262d;
+            border-radius: 8px;
+            border: 1px solid #30363d;
+            transition: all 0.2s;
+        }
+
+        .grading-service:hover {
+            border-color: #58a6ff;
+            background: rgba(88, 166, 255, 0.1);
+        }
+
+        .service-logo {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .service-name {
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+
+        .service-price {
+            color: #238636;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .sports-selector {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .market-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .grading-services {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="trading-dashboard.html" class="logo"> BRAINSTORM</a>
+        <div class="nav-items">
+            <a href="trading-dashboard.html" class="nav-item">Dashboard</a>
+            <a href="advanced-search.html" class="nav-item">Search</a>
+            <a href="#" class="nav-item active">Sports Cards</a>
+            <a href="#" class="nav-item">Market</a>
+            <a href="#" class="nav-item">Trading</a>
+        </div>
+        <div class="user-profile">
+            <span></span>
+            <span>Heath Davis</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1> Sports Card Hub</h1>
+            <p class="subtitle">Multi-Sport Card Tracking & Valuation Platform</p>
+            <div class="destroyer-badge">MULTI-SPORT DESTROYER</div>
+        </div>
+
+        <div class="sports-selector">
+            <div class="sport-option active" data-sport="baseball">
+                <span class="sport-icon"></span>
+                <div class="sport-name">Baseball</div>
+                <div class="sport-stats">25,000+ cards</div>
+            </div>
+            <div class="sport-option" data-sport="basketball">
+                <span class="sport-icon"></span>
+                <div class="sport-name">Basketball</div>
+                <div class="sport-stats">18,000+ cards</div>
+            </div>
+            <div class="sport-option" data-sport="football">
+                <span class="sport-icon"></span>
+                <div class="sport-name">Football</div>
+                <div class="sport-stats">22,000+ cards</div>
+            </div>
+            <div class="sport-option" data-sport="hockey">
+                <span class="sport-icon"></span>
+                <div class="sport-name">Hockey</div>
+                <div class="sport-stats">12,000+ cards</div>
+            </div>
+            <div class="sport-option" data-sport="soccer">
+                <span class="sport-icon"></span>
+                <div class="sport-name">Soccer</div>
+                <div class="sport-stats">15,000+ cards</div>
+            </div>
+        </div>
+
+        <div class="market-overview">
+            <div class="section-header">
+                <h2> Market Overview</h2>
+                <span style="color: #8b949e;">Live Data</span>
+            </div>
+            <div class="market-stats">
+                <div class="stat-box">
+                    <span class="stat-icon"></span>
+                    <div class="stat-value">$2.4B</div>
+                    <div class="stat-label">Total Market Cap</div>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-icon"></span>
+                    <div class="stat-value">+12.7%</div>
+                    <div class="stat-label">Month Over Month</div>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-icon"></span>
+                    <div class="stat-value">8,420</div>
+                    <div class="stat-label">Cards Sold Today</div>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-icon"></span>
+                    <div class="stat-value">PSA 10</div>
+                    <div class="stat-label">Trending Grade</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section search-section">
+            <div class="section-header">
+                <h2> Card Search</h2>
+                <span style="color: #8b949e;">Search across all sports</span>
+            </div>
+            
+            <div class="search-grid">
+                <div class="search-field">
+                    <label for="playerName">Player Name</label>
+                    <input type="text" id="playerName" class="search-input" placeholder="Enter player name...">
+                </div>
+                <div class="search-field">
+                    <label for="cardYear">Year</label>
+                    <select id="cardYear" class="search-select">
+                        <option value="">Any Year</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                        <option value="2020">2020</option>
+                        <option value="rookie">Rookie Cards</option>
+                    </select>
+                </div>
+                <div class="search-field">
+                    <label for="cardBrand">Brand/Set</label>
+                    <select id="cardBrand" class="search-select">
+                        <option value="">Any Brand</option>
+                        <option value="topps">Topps</option>
+                        <option value="panini">Panini</option>
+                        <option value="upper-deck">Upper Deck</option>
+                        <option value="bowman">Bowman</option>
+                    </select>
+                </div>
+                <button class="search-button" onclick="searchCards()">
+                     Search
+                </button>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <div class="section trending-cards">
+                <div class="section-header">
+                    <h2> Trending Cards</h2>
+                    <a href="#" style="color: #58a6ff; text-decoration: none;">View All</a>
+                </div>
+
+                <div class="cards-grid">
+                    <div class="card-item">
+                        <div class="card-image">
+                            
+                            <div class="card-grade">PSA 10</div>
+                        </div>
+                        <div class="card-info">
+                            <div class="card-name">Mike Trout Rookie</div>
+                            <div class="card-details">2009 Bowman Chrome Draft</div>
+                            <div class="card-details">Prospect Autograph</div>
+                            <div class="card-price-section">
+                                <span class="current-price">$12,680</span>
+                                <span class="price-change price-down">-2.5%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-item">
+                        <div class="card-image">
+                            
+                            <div class="card-grade">BGS 9.5</div>
+                        </div>
+                        <div class="card-info">
+                            <div class="card-name">LeBron James Rookie</div>
+                            <div class="card-details">2003 Topps Chrome</div>
+                            <div class="card-details">Refractor</div>
+                            <div class="card-price-section">
+                                <span class="current-price">$125,000</span>
+                                <span class="price-change price-up">+1.8%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-item">
+                        <div class="card-image">
+                            
+                            <div class="card-grade">PSA 9</div>
+                        </div>
+                        <div class="card-info">
+                            <div class="card-name">Tom Brady Rookie</div>
+                            <div class="card-details">2000 Playoff Contenders</div>
+                            <div class="card-details">Championship Ticket</div>
+                            <div class="card-price-section">
+                                <span class="current-price">$38,200</span>
+                                <span class="price-change price-up">+3.2%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-item">
+                        <div class="card-image">
+                            
+                            <div class="card-grade">SGC 10</div>
+                        </div>
+                        <div class="card-info">
+                            <div class="card-name">Wayne Gretzky Rookie</div>
+                            <div class="card-details">1979 O-Pee-Chee</div>
+                            <div class="card-details">#18</div>
+                            <div class="card-price-section">
+                                <span class="current-price">$94,500</span>
+                                <span class="price-change price-up">+4.7%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-item">
+                        <div class="card-image">
+                            
+                            <div class="card-grade">PSA 10</div>
+                        </div>
+                        <div class="card-info">
+                            <div class="card-name">Lionel Messi Rookie</div>
+                            <div class="card-details">2004 Panini Mega Cracks</div>
+                            <div class="card-details">FC Barcelona</div>
+                            <div class="card-price-section">
+                                <span class="current-price">$15,800</span>
+                                <span class="price-change price-up">+6.2%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-item">
+                        <div class="card-image">
+                            
+                            <div class="card-grade">PSA 10</div>
+                        </div>
+                        <div class="card-info">
+                            <div class="card-name">Ronald Acuña Jr.</div>
+                            <div class="card-details">2018 Topps Chrome</div>
+                            <div class="card-details">Rookie Autograph</div>
+                            <div class="card-price-section">
+                                <span class="current-price">$8,420</span>
+                                <span class="price-change price-up">+8.9%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <h2> Your Collection</h2>
+                    <span style="color: #8b949e;">42 cards</span>
+                </div>
+
+                <div class="cards-grid">
+                    <div class="card-item">
+                        <div class="card-image">
+                            
+                            <div class="card-grade">PSA 9</div>
+                        </div>
+                        <div class="card-info">
+                            <div class="card-name">Michael Jordan</div>
+                            <div class="card-details">1986 Fleer #57</div>
+                            <div class="card-details">Rookie Card</div>
+                            <div class="card-price-section">
+                                <span class="current-price">$48,200</span>
+                                <span class="price-change price-up">+2.1%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-item">
+                        <div class="card-image">
+                            
+                            <div class="card-grade">BGS 9</div>
+                        </div>
+                        <div class="card-info">
+                            <div class="card-name">Ken Griffey Jr.</div>
+                            <div class="card-details">1989 Upper Deck #1</div>
+                            <div class="card-details">Rookie Card</div>
+                            <div class="card-price-section">
+                                <span class="current-price">$12,400</span>
+                                <span class="price-change price-down">-1.3%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-item">
+                        <div class="card-image">
+                            
+                            <div class="card-grade">PSA 10</div>
+                        </div>
+                        <div class="card-info">
+                            <div class="card-name">Joe Montana</div>
+                            <div class="card-details">1981 Topps #216</div>
+                            <div class="card-details">Rookie Card</div>
+                            <div class="card-price-section">
+                                <span class="current-price">$18,600</span>
+                                <span class="price-change price-up">+1.4%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <a href="#" class="action-btn btn-scan">
+                 Scan Card
+            </a>
+            <a href="#" class="action-btn btn-grade">
+                 Submit for Grading
+            </a>
+            <a href="#" class="action-btn btn-sell">
+                 Sell Cards
+            </a>
+        </div>
+
+        <div class="grading-info">
+            <div class="section-header">
+                <h2> Grading Services</h2>
+                <span style="color: #8b949e;">Integrated submission tracking</span>
+            </div>
+            
+            <div class="grading-services">
+                <div class="grading-service">
+                    <span class="service-logo"></span>
+                    <div class="service-name">PSA</div>
+                    <div class="service-price">From $25</div>
+                </div>
+                <div class="grading-service">
+                    <span class="service-logo"></span>
+                    <div class="service-name">BGS</div>
+                    <div class="service-price">From $22</div>
+                </div>
+                <div class="grading-service">
+                    <span class="service-logo"></span>
+                    <div class="service-name">SGC</div>
+                    <div class="service-price">From $20</div>
+                </div>
+                <div class="grading-service">
+                    <span class="service-logo"></span>
+                    <div class="service-name">CGC</div>
+                    <div class="service-price">From $18</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSport = 'baseball';
+        
+        // Sport Selection
+        document.querySelectorAll('.sport-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.sport-option').forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+                currentSport = this.dataset.sport;
+                updateSportData();
+            });
+        });
+
+        function updateSportData() {
+            console.log(`Switched to ${currentSport}`);
+            // In real implementation, this would update:
+            // - Trending cards for the selected sport
+            // - Search filters
+            // - Market data
+            // - Brand options
+        }
+
+        function searchCards() {
+            const playerName = document.getElementById('playerName').value;
+            const year = document.getElementById('cardYear').value;
+            const brand = document.getElementById('cardBrand').value;
+            
+            console.log(`Searching for: ${playerName} | ${year} | ${brand} | Sport: ${currentSport}`);
+            
+            // In real implementation, this would:
+            // - Connect to sports card APIs
+            // - Search multiple databases
+            // - Return real-time pricing
+            // - Show authentic card images
+            
+            alert(`Searching ${currentSport} cards for: ${playerName || 'All players'}`);
+        }
+
+        // Simulate real-time price updates
+        function updatePrices() {
+            const priceElements = document.querySelectorAll('.current-price');
+            priceElements.forEach(el => {
+                if (Math.random() > 0.8) {
+                    el.style.transform = 'scale(1.05)';
+                    setTimeout(() => {
+                        el.style.transform = 'scale(1)';
+                    }, 200);
+                }
+            });
+        }
+
+        // Update prices every 5 seconds
+        setInterval(updatePrices, 5000);
+
+        // Add click handlers for cards
+        document.querySelectorAll('.card-item').forEach(card => {
+            card.addEventListener('click', function() {
+                this.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    this.style.transform = 'translateY(-5px)';
+                }, 150);
+            });
+        });
+
+        // Initialize
+        updateSportData();
+        
+        console.log(' Sports Card Hub - Multi-Sport Destroyer Loaded');
+        console.log(` Current Sport: ${currentSport}`);
+        console.log(' Unified sports card platform operational');
+        console.log(' Market Cap: $2.4B across all sports');
+        console.log(' 15M+ users targeted for capture');
+        
+        // Grading service integration
+        document.querySelectorAll('.grading-service').forEach(service => {
+            service.addEventListener('click', function() {
+                const serviceName = this.querySelector('.service-name').textContent;
+                console.log(`Selected grading service: ${serviceName}`);
+                alert(`Redirecting to ${serviceName} submission portal...`);
+            });
+        });
+
+        // Quick actions
+        document.querySelectorAll('.action-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const action = this.textContent.trim();
+                console.log(`Quick action: ${action}`);
+                
+                if (action.includes('Scan')) {
+                    alert(' Camera card scanning feature activated!\nPoint camera at your sports card...');
+                } else if (action.includes('Grading')) {
+                    alert(' Grading submission portal opened!\nSelect your cards for professional grading...');
+                } else if (action.includes('Sell')) {
+                    alert(' Marketplace opened!\nList your cards for sale...');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

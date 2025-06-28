@@ -1,0 +1,10 @@
+﻿body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: #000000;
+  color: #FFFFFF;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}

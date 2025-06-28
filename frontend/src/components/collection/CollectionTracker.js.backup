@@ -1,0 +1,247 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import { AreaChart, Area, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import './CollectionTracker.css';
+
+const CollectionTracker = () => {
+ const [portfolioData, setPortfolioData] = useState(null);
+ const [loading, setLoading] = useState(true);
+ const [viewMode, setViewMode] = useState('overview'); // overview, analytics, breakdown
+
+ const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
+ const fetchPortfolioDataCallback = useCallback(fetchPortfolioData, []);
+
+  useEffect(() => {
+    fetchPortfolioDataCallback();
+  }, [fetchPortfolioDataCallback]);
+
+ const fetchPortfolioData = async () => {
+   try {
+     const response = await fetch(`${API_BASE_URL}/api/collections`);
+     const data = await response.json();
+     setPortfolioData(data);
+   } catch (error) {
+     console.error('Failed to fetch portfolio:', error);
+   } finally {
+     setLoading(false);
+   }
+ };
+
+ if (loading) {
+   return <div className="loading"> Loading portfolio analytics...</div>;
+ }
+
+ const gameColors = {
+   magic: '#FF6B35',
+   pokemon: '#FFEB3B', 
+   yugioh: '#9C27B0',
+   sports: '#4CAF50'
+ };
+
+ const pieData = portfolioData?.gameBreakdown ? 
+   Object.entries(portfolioData.gameBreakdown).map(([game, data]) => ({
+     name: game.toUpperCase(),
+     value: data.value,
+     percentage: data.percentage,
+     fill: gameColors[game]
+   })) : [];
+
+ const performanceData = [
+   { period: '1D', value: portfolioData?.dailyChange || 0 },
+   { period: '1W', value: portfolioData?.weeklyChange || 0 },
+   { period: '1M', value: portfolioData?.monthlyChange || 0 },
+   { period: '3M', value: 8.7 },
+   { period: '6M', value: 15.3 },
+   { period: '1Y', value: 24.8 }
+ ];
+
+ const trendData = [
+   { month: 'Jan', value: 98500 },
+   { month: 'Feb', value: 105200 },
+   { month: 'Mar', value: 112800 },
+   { month: 'Apr', value: 108900 },
+   { month: 'May', value: 118500 },
+   { month: 'Jun', value: 125840 }
+ ];
+
+ return (
+   <div className="collection-tracker">
+     <div className="portfolio-header">
+       <div className="portfolio-value">
+         <h1>${portfolioData?.totalValue?.toLocaleString() || '125,840.23'}</h1>
+         <div className="daily-change positive">
+           ({portfolioData?.dailyChange > 0 ? '+' : ''}{portfolioData?.dailyChange}%) Today
+         </div>
+       </div>
+       
+       <div className="portfolio-stats">
+         <div className="stat-item">
+           <span className="stat-label">Cards</span>
+           <span className="stat-value">{portfolioData?.cardCount || 847}</span>
+         </div>
+         <div className="stat-item">
+           <span className="stat-label">Games</span>
+           <span className="stat-value">4</span>
+         </div>
+         <div className="stat-item">
+           <span className="stat-label">Buying Power</span>
+           <span className="stat-value">$15,420.50</span>
+         </div>
+       </div>
+     </div>
+
+     <div className="view-mode-tabs">
+       <button 
+         className={viewMode === 'overview' ? 'active' : ''}
+         onClick={() => setViewMode('overview')}
+       >
+          Overview
+       </button>
+       <button 
+         className={viewMode === 'analytics' ? 'active' : ''}
+         onClick={() => setViewMode('analytics')}
+       >
+          Analytics
+       </button>
+       <button 
+         className={viewMode === 'breakdown' ? 'active' : ''}
+         onClick={() => setViewMode('breakdown')}
+       >
+          Game Breakdown
+       </button>
+     </div>
+
+     {viewMode === 'overview' && (
+       <div className="overview-content">
+         <div className="charts-grid">
+           <div className="chart-container">
+             <h3>Portfolio Trend (6 Months)</h3>
+             <ResponsiveContainer width="100%" height={200}>
+               <AreaChart data={trendData}>
+                 <defs>
+                   <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                     <stop offset="5%" stopColor="#7c4dff" stopOpacity={0.8}/>
+                     <stop offset="95%" stopColor="#7c4dff" stopOpacity={0.1}/>
+                   </linearGradient>
+                 </defs>
+                 <XAxis dataKey="month" />
+                 <YAxis />
+                 <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                 <Tooltip formatter={(value) => [`$${value.toLocaleString()}`, 'Portfolio Value']} />
+                 <Area type="monotone" dataKey="value" stroke="#7c4dff" fillOpacity={1} fill="url(#colorValue)" />
+               </AreaChart>
+             </ResponsiveContainer>
+           </div>
+
+           <div className="chart-container">
+             <h3>Game Allocation</h3>
+             <ResponsiveContainer width="100%" height={200}>
+               <PieChart>
+                 <Pie
+                   data={pieData}
+                   dataKey="value"
+                   nameKey="name"
+                   cx="50%"
+                   cy="50%"
+                   outerRadius={80}
+                   label={({percentage}) => `${percentage.toFixed(1)}%`}
+                 >
+                   {pieData.map((entry, index) => (
+                     <Cell key={`cell-${index}`} fill={entry.fill} />
+                   ))}
+                 </Pie>
+                 <Tooltip formatter={(value) => `$${value.toLocaleString()}`} />
+               </PieChart>
+             </ResponsiveContainer>
+           </div>
+         </div>
+
+         <div className="top-performers">
+           <h3> Top Performers</h3>
+           <div className="performer-grid">
+             {portfolioData?.topGainers?.map((gainer, index) => (
+               <div key={index} className="performer-item">
+                 <span className="performer-name">{gainer.name}</span>
+                 <span className="performer-game">{gainer.game.toUpperCase()}</span>
+                 <span className="performer-gain positive">+{gainer.gain}%</span>
+               </div>
+             ))}
+           </div>
+         </div>
+       </div>
+     )}
+
+     {viewMode === 'analytics' && (
+       <div className="analytics-content">
+         <div className="performance-metrics">
+           <h3> Performance Analytics</h3>
+           <ResponsiveContainer width="100%" height={250}>
+             <BarChart data={performanceData}>
+               <XAxis dataKey="period" />
+               <YAxis />
+               <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+               <Tooltip formatter={(value) => [`${value}%`, 'Return']} />
+               <Bar dataKey="value" fill="#4CAF50" />
+             </BarChart>
+           </ResponsiveContainer>
+         </div>
+
+         <div className="risk-metrics">
+           <h3> Risk Analysis</h3>
+           <div className="metrics-grid">
+             <div className="metric-card">
+               <h4>Sharpe Ratio</h4>
+               <span className="metric-value">1.85</span>
+               <span className="metric-status excellent">Excellent</span>
+             </div>
+             <div className="metric-card">
+               <h4>Volatility</h4>
+               <span className="metric-value">12.4%</span>
+               <span className="metric-status moderate">Moderate</span>
+             </div>
+             <div className="metric-card">
+               <h4>Max Drawdown</h4>
+               <span className="metric-value">-8.2%</span>
+               <span className="metric-status good">Good</span>
+             </div>
+             <div className="metric-card">
+               <h4>Beta</h4>
+               <span className="metric-value">0.76</span>
+               <span className="metric-status conservative">Conservative</span>
+             </div>
+           </div>
+         </div>
+       </div>
+     )}
+
+     {viewMode === 'breakdown' && (
+       <div className="breakdown-content">
+         <h3> Multi-TCG Portfolio Breakdown</h3>
+         <div className="game-breakdown-grid">
+           {portfolioData?.gameBreakdown && Object.entries(portfolioData.gameBreakdown).map(([game, data]) => (
+             <div key={game} className="game-card" style={{borderColor: gameColors[game]}}>
+               <div className="game-header">
+                 <h4>{game.toUpperCase()}</h4>
+                 <span className="game-icon">
+                   {game === 'magic' ? '' : 
+                    game === 'pokemon' ? '' : 
+                    game === 'yugioh' ? '' : ''}
+                 </span>
+               </div>
+               <div className="game-stats">
+                 <div className="game-value">${data.value.toLocaleString()}</div>
+                 <div className="game-details">
+                   <span>{data.count} cards</span>
+                   <span>{data.percentage.toFixed(1)}% of portfolio</span>
+                 </div>
+               </div>
+             </div>
+           ))}
+         </div>
+       </div>
+     )}
+   </div>
+ );
+};
+
+export default CollectionTracker;

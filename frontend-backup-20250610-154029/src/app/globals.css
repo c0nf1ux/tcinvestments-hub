@@ -1,0 +1,13 @@
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --periwinkle-50: #F8F8FF;
+  --periwinkle-900: #2D2D4A;
+}
+
+body {
+  color: var(--periwinkle-900);
+  background: var(--periwinkle-50);
+}

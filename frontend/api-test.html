@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>Brainstorm API Test</title>
+   <style>
+       body { font-family: Arial, sans-serif; padding: 20px; background: #1a1a2e; color: white; }
+       .container { max-width: 600px; margin: 0 auto; }
+       button { padding: 10px 20px; margin: 10px; background: #7c4dff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+       .result { background: #333; padding: 10px; margin: 10px 0; border-radius: 5px; }
+   </style>
+</head>
+<body>
+   <div class="container">
+       <h1> Brainstorm API Test Page</h1>
+       <p>Use this page to test the backend API directly:</p>
+       
+       <button onclick="testHealth()">Test Backend Health</button>
+       <button onclick="testAuth()">Test Registration</button>
+       <button onclick="testSearch()">Test Search</button>
+       
+       <div id="results"></div>
+       
+       <script>
+           const apiBase = 'http://localhost:5000';
+           const results = document.getElementById('results');
+           
+           function addResult(title, data) {
+               results.innerHTML += `<div class="result"><h3>${title}</h3><pre>${JSON.stringify(data, null, 2)}</pre></div>`;
+           }
+           
+           async function testHealth() {
+               try {
+                   const response = await fetch(`${apiBase}/api/health`);
+                   const data = await response.json();
+                   addResult('Health Check ', data);
+               } catch (error) {
+                   addResult('Health Check ', { error: error.message });
+               }
+           }
+           
+           async function testAuth() {
+               try {
+                   const testUser = {
+                       username: 'directtest',
+                       email: 'direct@test.com',
+                       password: 'testpass123',
+                       firstName: 'Direct',
+                       lastName: 'Test'
+                   };
+                   
+                   const response = await fetch(`${apiBase}/api/auth/register`, {
+                       method: 'POST',
+                       headers: { 'Content-Type': 'application/json' },
+                       body: JSON.stringify(testUser)
+                   });
+                   const data = await response.json();
+                   addResult('Registration Test', data);
+               } catch (error) {
+                   addResult('Registration Test ', { error: error.message });
+               }
+           }
+           
+           async function testSearch() {
+               try {
+                   const response = await fetch(`${apiBase}/api/cards/search?query=charizard&game=pokemon`);
+                   const data = await response.json();
+                   addResult('Search Test ', data);
+               } catch (error) {
+                   addResult('Search Test ', { error: error.message });
+               }
+           }
+       </script>
+   </div>
+</body>
+</html>

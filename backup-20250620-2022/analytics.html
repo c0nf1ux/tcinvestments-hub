@@ -1,0 +1,706 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> BRAINSTORM Market Analytics</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: #161b22;
+            border-bottom: 1px solid #30363d;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo { 
+            font-size: 1.5rem; 
+            font-weight: bold; 
+            color: #58a6ff;
+            text-decoration: none;
+        }
+        
+        .nav-items { display: flex; gap: 2rem; align-items: center; }
+        
+        .nav-item {
+            color: #8b949e;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            color: #e6edf3;
+            background: #21262d;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #21262d;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #238636, #2ea043, #58a6ff, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 300% 300%;
+            animation: gradient 3s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #8b949e;
+            margin-bottom: 1rem;
+        }
+
+        .destroyer-badge {
+            display: inline-block;
+            background: #da3633;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .market-overview {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .overview-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .overview-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .overview-card:hover::before {
+            left: 100%;
+        }
+
+        .overview-card:hover {
+            transform: translateY(-5px);
+            border-color: #58a6ff;
+        }
+
+        .overview-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .overview-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .overview-label {
+            color: #8b949e;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .overview-change {
+            font-size: 0.9rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-weight: bold;
+        }
+
+        .positive { 
+            color: #238636; 
+            background: rgba(35, 134, 54, 0.15);
+        }
+
+        .negative { 
+            color: #da3633; 
+            background: rgba(218, 54, 51, 0.15);
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .chart-container {
+            height: 400px;
+            background: #21262d;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #8b949e;
+        }
+
+        .price-table {
+            overflow-x: auto;
+        }
+
+        .price-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .price-table th,
+        .price-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .price-table th {
+            background: #21262d;
+            font-weight: bold;
+            color: #e6edf3;
+        }
+
+        .price-table tr:hover {
+            background: #21262d;
+        }
+
+        .card-name {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .card-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: white;
+        }
+
+        .price-current {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .price-change-cell {
+            font-weight: bold;
+        }
+
+        .trending-section {
+            margin-bottom: 2rem;
+        }
+
+        .trending-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .trending-card {
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .trending-card:hover {
+            transform: translateY(-3px);
+            border-color: #58a6ff;
+        }
+
+        .trending-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .trending-name {
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+
+        .trending-price {
+            color: #238636;
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+
+        .trending-change {
+            font-size: 0.9rem;
+        }
+
+        .market-sentiment {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .sentiment-indicators {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .sentiment-item {
+            text-align: center;
+            padding: 1rem;
+            background: #21262d;
+            border-radius: 8px;
+        }
+
+        .sentiment-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .sentiment-label {
+            color: #8b949e;
+            font-size: 0.9rem;
+        }
+
+        .bullish { color: #238636; }
+        .bearish { color: #da3633; }
+        .neutral { color: #ffd700; }
+
+        .analytics-tools {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .tool-btn {
+            padding: 1rem;
+            background: linear-gradient(135deg, #58a6ff, #7c3aed);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .tool-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .market-overview {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .market-overview {
+                grid-template-columns: 1fr;
+            }
+            
+            .sentiment-indicators {
+                grid-template-columns: 1fr;
+            }
+            
+            .analytics-tools {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="trading-dashboard.html" class="logo"> BRAINSTORM</a>
+        <div class="nav-items">
+            <a href="trading-dashboard.html" class="nav-item">Dashboard</a>
+            <a href="advanced-search.html" class="nav-item">Search</a>
+            <a href="sports-card-hub.html" class="nav-item">Sports Cards</a>
+            <a href="ai-deck-builder.html" class="nav-item">Deck Builder</a>
+            <a href="#" class="nav-item active">Market</a>
+        </div>
+        <div class="user-profile">
+            <span></span>
+            <span>Heath Davis</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1> Market Analytics</h1>
+            <p class="subtitle">Advanced Market Intelligence & Price Tracking</p>
+            <div class="destroyer-badge">MTGSTOCKS DESTROYER</div>
+        </div>
+
+        <div class="market-overview">
+            <div class="overview-card">
+                <span class="overview-icon"></span>
+                <div class="overview-value">$2.4B</div>
+                <div class="overview-label">Total Market Cap</div>
+                <div class="overview-change positive">+8.7%</div>
+            </div>
+            <div class="overview-card">
+                <span class="overview-icon"></span>
+                <div class="overview-value">847K</div>
+                <div class="overview-label">Daily Volume</div>
+                <div class="overview-change positive">+12.4%</div>
+            </div>
+            <div class="overview-card">
+                <span class="overview-icon"></span>
+                <div class="overview-value">+15.2%</div>
+                <div class="overview-label">Monthly Growth</div>
+                <div class="overview-change positive">+2.1%</div>
+            </div>
+            <div class="overview-card">
+                <span class="overview-icon"></span>
+                <div class="overview-value">2,847</div>
+                <div class="overview-label">Active Traders</div>
+                <div class="overview-change positive">+24.6%</div>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <div class="section">
+                <div class="section-header">
+                    <h2> Price Chart</h2>
+                    <select style="background: #21262d; border: 1px solid #30363d; color: #e6edf3; padding: 0.5rem; border-radius: 6px;">
+                        <option>All Cards</option>
+                        <option>Magic: The Gathering</option>
+                        <option>Pokemon</option>
+                        <option>Sports Cards</option>
+                    </select>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-placeholder">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;"></div>
+                        <p>Interactive Price Chart</p>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem;">Real-time market data visualization</p>
+                    </div>
+                </div>
+
+                <div class="price-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Card</th>
+                                <th>Current Price</th>
+                                <th>24h Change</th>
+                                <th>7d Change</th>
+                                <th>Volume</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="card-name">
+                                        <div class="card-icon"></div>
+                                        <div>
+                                            <div>Black Lotus</div>
+                                            <div style="color: #8b949e; font-size: 0.8rem;">Alpha</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="price-current">$42,850</td>
+                                <td class="price-change-cell positive">+5.98%</td>
+                                <td class="price-change-cell positive">+12.4%</td>
+                                <td>$847K</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="card-name">
+                                        <div class="card-icon"></div>
+                                        <div>
+                                            <div>Charizard</div>
+                                            <div style="color: #8b949e; font-size: 0.8rem;">Base Set</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="price-current">$18,420</td>
+                                <td class="price-change-cell positive">+10.98%</td>
+                                <td class="price-change-cell positive">+18.7%</td>
+                                <td>$524K</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="card-name">
+                                        <div class="card-icon"></div>
+                                        <div>
+                                            <div>Time Walk</div>
+                                            <div style="color: #8b949e; font-size: 0.8rem;">Beta</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="price-current">$15,240</td>
+                                <td class="price-change-cell positive">+5.83%</td>
+                                <td class="price-change-cell positive">+9.2%</td>
+                                <td>$312K</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="card-name">
+                                        <div class="card-icon"></div>
+                                        <div>
+                                            <div>Mike Trout Rookie</div>
+                                            <div style="color: #8b949e; font-size: 0.8rem;">2009 Bowman</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="price-current">$12,680</td>
+                                <td class="price-change-cell negative">-2.46%</td>
+                                <td class="price-change-cell negative">-1.2%</td>
+                                <td>$198K</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="card-name">
+                                        <div class="card-icon"></div>
+                                        <div>
+                                            <div>Mox Sapphire</div>
+                                            <div style="color: #8b949e; font-size: 0.8rem;">Alpha</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="price-current">$8,940</td>
+                                <td class="price-change-cell positive">+5.17%</td>
+                                <td class="price-change-cell positive">+7.8%</td>
+                                <td>$156K</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <h2> Trending Cards</h2>
+                    <span style="color: #8b949e;">Last 24h</span>
+                </div>
+
+                <div class="trending-cards">
+                    <div class="trending-card">
+                        <span class="trending-icon"></span>
+                        <div class="trending-name">Pikachu Illustrator</div>
+                        <div class="trending-price">$485,000</div>
+                        <div class="trending-change positive">+2.4%</div>
+                    </div>
+
+                    <div class="trending-card">
+                        <span class="trending-icon"></span>
+                        <div class="trending-name">LeBron Rookie</div>
+                        <div class="trending-price">$125,000</div>
+                        <div class="trending-change positive">+1.8%</div>
+                    </div>
+
+                    <div class="trending-card">
+                        <span class="trending-icon"></span>
+                        <div class="trending-name">Brady Rookie</div>
+                        <div class="trending-price">$38,200</div>
+                        <div class="trending-change positive">+3.2%</div>
+                    </div>
+
+                    <div class="trending-card">
+                        <span class="trending-icon"></span>
+                        <div class="trending-name">Messi Rookie</div>
+                        <div class="trending-price">$15,800</div>
+                        <div class="trending-change positive">+6.2%</div>
+                    </div>
+
+                    <div class="trending-card">
+                        <span class="trending-icon"></span>
+                        <div class="trending-name">Acuña Jr.</div>
+                        <div class="trending-price">$8,420</div>
+                        <div class="trending-change positive">+8.9%</div>
+                    </div>
+
+                    <div class="trending-card">
+                        <span class="trending-icon"></span>
+                        <div class="trending-name">Gretzky Rookie</div>
+                        <div class="trending-price">$94,500</div>
+                        <div class="trending-change positive">+4.7%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="market-sentiment">
+            <div class="section-header">
+                <h2> Market Sentiment</h2>
+                <span style="color: #8b949e;">AI-powered analysis</span>
+            </div>
+
+            <div class="sentiment-indicators">
+                <div class="sentiment-item">
+                    <div class="sentiment-value bullish">78%</div>
+                    <div class="sentiment-label">Bullish Sentiment</div>
+                </div>
+                <div class="sentiment-item">
+                    <div class="sentiment-value neutral">15%</div>
+                    <div class="sentiment-label">Neutral</div>
+                </div>
+                <div class="sentiment-item">
+                    <div class="sentiment-value bearish">7%</div>
+                    <div class="sentiment-label">Bearish</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="analytics-tools">
+            <button class="tool-btn" onclick="runPriceAnalysis()">
+                 Price Analysis
+            </button>
+            <button class="tool-btn" onclick="generateReport()">
+                 Generate Report
+            </button>
+            <button class="tool-btn" onclick="setAlerts()">
+                 Set Price Alerts
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Simulate real-time price updates
+        function updatePrices() {
+            const priceElements = document.querySelectorAll('.price-current');
+            priceElements.forEach(el => {
+                if (Math.random() > 0.7) {
+                    el.style.transform = 'scale(1.05)';
+                    el.style.color = '#238636';
+                    setTimeout(() => {
+                        el.style.transform = 'scale(1)';
+                        el.style.color = '';
+                    }, 300);
+                }
+            });
+        }
+
+        // Update market overview values
+        function updateMarketOverview() {
+            const overviewValues = document.querySelectorAll('.overview-value');
+            overviewValues.forEach(el => {
+                if (Math.random() > 0.8) {
+                    el.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        el.style.transform = 'scale(1)';
+                    }, 200);
+                }
+            });
+        }
+
+        // Analytics functions
+        function runPriceAnalysis() {
+            console.log(' Running advanced price analysis...');
+            alert(' Price Analysis Complete!\n\n Identified 12 undervalued cards\n 3 cards showing breakout patterns\n Market correlation at 0.847\n Volatility index: 23.4%\n\nRecommendation: BULLISH trend expected');
+        }
+
+        function generateReport() {
+            console.log(' Generating market report...');
+            alert(' Market Report Generated!\n\n Total market analysis complete\n 47 trending cards identified\n Sentiment analysis: 78% bullish\n Risk assessment included\n\nReport saved to your dashboard');
+        }
+
+        function setAlerts() {
+            console.log(' Setting up price alerts...');
+            alert(' Price Alerts Configured!\n\n Black Lotus: Alert at $45,000\n Charizard: Alert at $20,000\n Time Walk: Alert at $16,000\n Trout Rookie: Alert at $13,500\n\nAlerts will be sent via email and push notifications');
+        }
+
+        // Start real-time updates
+        setInterval(updatePrices, 5000);
+        setInterval(updateMarketOverview, 8000);
+
+        // Initialize
+        console.log(' Market Analytics - MTGStocks Destroyer Loaded');
+        console.log(' Market Cap: $2.4B actively tracked');
+        console.log(' Real-time analytics operational');
+        console.log(' Target: 500K+ MTGStocks users for capture');
+        console.log(' Advanced features: Sentiment analysis, price predictions, volatility tracking');
+    </script>
+</body>
+</html>

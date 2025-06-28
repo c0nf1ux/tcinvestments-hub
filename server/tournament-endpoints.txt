@@ -1,0 +1,57 @@
+// Tournament & News API Endpoints
+app.get("/api/tournaments", async (req, res) => {
+  try {
+    const tournaments = [
+      {
+        id: 1,
+        name: "Pro Tour Championship",
+        location: "Las Vegas, NV",
+        status: "LIVE",
+        players: 847,
+        prizePool: "$75K"
+      },
+      {
+        id: 2,
+        name: "Regional Championship",
+        location: "Tokyo, Japan", 
+        status: "LIVE",
+        players: 324,
+        prizePool: "$25K"
+      }
+    ];
+    res.json({
+      success: true,
+      data: { totalEvents: 847, tournaments: tournaments }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.get("/api/news", async (req, res) => {
+  try {
+    const news = [
+      {
+        id: 1,
+        type: "BREAKING",
+        title: "Major Tournament Meta Shift",
+        excerpt: "New archetype dominates Pro Tour Day 1"
+      }
+    ];
+    res.json({ success: true, data: { articles: news } });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.get("/api/events", async (req, res) => {
+  try {
+    res.json({
+      success: true,
+      data: { liveCount: 847, upcomingCount: 156 }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+

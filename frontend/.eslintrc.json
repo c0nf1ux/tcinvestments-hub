@@ -1,0 +1,14 @@
+﻿{
+  "extends": ["react-app", "react-app/jest"],
+  "rules": {
+    "unicode-bom": "off"
+  },
+  "overrides": [
+    {
+      "files": ["**/*.js", "**/*.jsx"],
+      "rules": {
+        "unicode-bom": "off"
+      }
+    }
+  ]
+}

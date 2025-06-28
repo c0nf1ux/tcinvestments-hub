@@ -1,0 +1,85 @@
+﻿/* Periwinkle & Black Magic Theme - 6th Color of Magic */
+:root {
+  --periwinkle-primary: #C5C5FF;
+  --periwinkle-secondary: #9999FF;
+  --periwinkle-dark: #6666CC;
+  --periwinkle-light: #E6E6FF;
+  --magic-black: #0D0D0D;
+  --magic-dark-gray: #1A1A1A;
+  --magic-charcoal: #2D2D2D;
+  --accent-gold: #FFD700;
+  --success-green: #00FF88;
+  --warning-orange: #FF8C42;
+}
+
+/* Global theme overrides */
+body {
+  background: linear-gradient(135deg, var(--magic-black) 0%, var(--magic-dark-gray) 50%, var(--periwinkle-dark) 100%);
+  color: var(--periwinkle-light);
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+}
+
+/* Main container styling */
+.App {
+  background: var(--magic-black);
+  min-height: 100vh;
+}
+
+/* Header/Navigation */
+.header, .navbar, .top-nav {
+  background: linear-gradient(90deg, var(--magic-black) 0%, var(--periwinkle-dark) 100%);
+  border-bottom: 2px solid var(--periwinkle-primary);
+}
+
+/* Cards and panels */
+.card, .panel, .dashboard-card {
+  background: linear-gradient(145deg, var(--magic-dark-gray) 0%, var(--magic-charcoal) 100%);
+  border: 1px solid var(--periwinkle-secondary);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(197, 197, 255, 0.1);
+  color: var(--periwinkle-light);
+}
+
+/* Buttons */
+.btn, button {
+  background: linear-gradient(135deg, var(--periwinkle-secondary) 0%, var(--periwinkle-dark) 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  transition: all 0.3s ease;
+}
+
+.btn:hover, button:hover {
+  background: linear-gradient(135deg, var(--periwinkle-primary) 0%, var(--periwinkle-secondary) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(197, 197, 255, 0.3);
+}
+
+/* Primary accent (like the green chart) */
+.success, .positive, .gain {
+  color: var(--success-green) !important;
+}
+
+/* Text colors */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--periwinkle-light);
+}
+
+.text-primary {
+  color: var(--periwinkle-primary) !important;
+}
+
+.text-secondary {
+  color: var(--periwinkle-secondary) !important;
+}
+
+/* Magic glow effects */
+.magic-glow {
+  box-shadow: 0 0 20px rgba(197, 197, 255, 0.4);
+}
+
+.magic-border {
+  border: 2px solid var(--periwinkle-primary);
+  background: linear-gradient(145deg, var(--magic-black), var(--periwinkle-dark));
+}

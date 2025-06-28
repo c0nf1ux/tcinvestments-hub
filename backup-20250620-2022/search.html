@@ -1,0 +1,1103 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BRAINSTORM - Advanced Search | Pokemon, Magic, Yu-Gi-Oh!, Sports</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #CCCCFF;
+            text-shadow: 0 0 20px rgba(204, 204, 255, 0.5);
+        }
+        
+        .nav-button {
+            background: linear-gradient(135deg, #CCCCFF, #9999FF);
+            color: #1a1a2e;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(204, 204, 255, 0.4);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .search-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .search-header h1 {
+            font-size: 3rem;
+            color: #CCCCFF;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 30px rgba(204, 204, 255, 0.6);
+        }
+        
+        .search-controls {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(204, 204, 255, 0.2);
+        }
+        
+        .search-row {
+            display: grid;
+            grid-template-columns: 150px 1fr 120px;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+        
+        .search-input, .search-select {
+            padding: 0.75rem;
+            border: 2px solid rgba(204, 204, 255, 0.3);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus, .search-select:focus {
+            outline: none;
+            border-color: #CCCCFF;
+            box-shadow: 0 0 15px rgba(204, 204, 255, 0.3);
+        }
+        
+        .search-input::placeholder { color: rgba(255, 255, 255, 0.6); }
+        .search-select option { background: #1a1a2e; color: white; }
+        
+        .search-button {
+            background: linear-gradient(135deg, #CCCCFF, #9999FF);
+            color: #1a1a2e;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .search-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(204, 204, 255, 0.4);
+        }
+        
+        .autocomplete-container { position: relative; }
+        
+        .autocomplete-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(204, 204, 255, 0.3);
+            border-radius: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .suggestion-item {
+            padding: 0.75rem;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(204, 204, 255, 0.1);
+            transition: background 0.2s ease;
+        }
+        
+        .suggestion-item:hover { background: rgba(204, 204, 255, 0.2); }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .game-specific-filters {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .game-specific-filters.active {
+            display: grid;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .card-item {
+            background: linear-gradient(135deg, rgba(204, 204, 255, 0.1), rgba(153, 153, 255, 0.05));
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(204, 204, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(204, 204, 255, 0.3);
+            border-color: #CCCCFF;
+        }
+        
+        .card-item::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(204, 204, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+        
+        .card-item:hover::before {
+            opacity: 1;
+            animation: shimmer 1.5s ease-in-out;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border: 2px solid rgba(204, 204, 255, 0.3);
+        }
+        
+        .card-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #CCCCFF;
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-type {
+            background: rgba(204, 204, 255, 0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(204, 204, 255, 0.3);
+        }
+        
+        .card-price {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+            color: #CCCCFF;
+        }
+        
+        .error-message {
+            background: rgba(255, 0, 0, 0.1);
+            color: #ff6b6b;
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            border: 1px solid rgba(255, 0, 0, 0.3);
+        }
+        
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            border: 1px solid rgba(204, 204, 255, 0.2);
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #CCCCFF;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .advanced-filters {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            border: 1px solid rgba(204, 204, 255, 0.1);
+        }
+        
+        .advanced-filters.active {
+            display: block;
+        }
+        
+        .toggle-filters {
+            background: rgba(204, 204, 255, 0.1);
+            border: 1px solid rgba(204, 204, 255, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+        
+        .price-filter {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-top: 1rem;
+        }
+        
+        .price-filter input {
+            width: 100px;
+        }
+        
+        .sort-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+        
+        .view-toggle {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .view-button {
+            background: rgba(204, 204, 255, 0.1);
+            border: 1px solid rgba(204, 204, 255, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .view-button.active {
+            background: rgba(204, 204, 255, 0.3);
+        }
+        
+        .results-list {
+            display: none;
+        }
+        
+        .results-list.active {
+            display: block;
+        }
+        
+        .list-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(204, 204, 255, 0.2);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .list-item img {
+            width: 60px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        
+        .list-item-info {
+            flex: 1;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+        
+        .page-button {
+            background: rgba(204, 204, 255, 0.1);
+            border: 1px solid rgba(204, 204, 255, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .page-button.active {
+            background: rgba(204, 204, 255, 0.3);
+        }
+        
+        .page-button:hover {
+            background: rgba(204, 204, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">BRAINSTORM</div>
+        <a href="index.html" class="nav-button"> All Platforms</a>
+    </div>
+
+    <div class="container">
+        <div class="search-header">
+            <h1> Advanced Search</h1>
+            <p>Search across Pokemon, Magic, Yu-Gi-Oh!, and Sports cards with real-time data and predictive search</p>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-number" id="totalCards">67.8M+</div>
+                <div class="stat-label">Total Cards</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="activeUsers">2.4M+</div>
+                <div class="stat-label">Active Users</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="marketValue">$2.4B+</div>
+                <div class="stat-label">Market Value</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="searchesPerDay">847K+</div>
+                <div class="stat-label">Daily Searches</div>
+            </div>
+        </div>
+
+        <div class="search-controls">
+            <div class="search-row">
+                <label>Card Game:</label>
+                <select id="gameSelect" class="search-select">
+                    <option value="pokemon">Pokemon TCG</option>
+                    <option value="magic">Magic: The Gathering</option>
+                    <option value="yugioh">Yu-Gi-Oh!</option>
+                    <option value="sports">Sports Cards</option>
+                </select>
+                <button id="searchBtn" class="search-button">Search</button>
+            </div>
+
+            <div class="search-row">
+                <label>Card Name:</label>
+                <div class="autocomplete-container">
+                    <input type="text" id="cardNameInput" class="search-input" placeholder="Type card name for AI suggestions...">
+                    <div id="autocompleteSuggestions" class="autocomplete-suggestions"></div>
+                </div>
+                <div></div>
+            </div>
+
+            <!-- Pokemon Filters -->
+            <div id="pokemonFilters" class="game-specific-filters active">
+                <select id="pokemonSet" class="search-select">
+                    <option value="">All Pokemon Sets</option>
+                    <option value="base1">Base Set</option>
+                    <option value="jungle">Jungle</option>
+                    <option value="fossil">Fossil</option>
+                    <option value="base2">Base Set 2</option>
+                    <option value="team-rocket">Team Rocket</option>
+                    <option value="gym-heroes">Gym Heroes</option>
+                    <option value="gym-challenge">Gym Challenge</option>
+                    <option value="neo-genesis">Neo Genesis</option>
+                    <option value="neo-discovery">Neo Discovery</option>
+                    <option value="neo-revelation">Neo Revelation</option>
+                    <option value="neo-destiny">Neo Destiny</option>
+                    <option value="legendary-collection">Legendary Collection</option>
+                    <option value="expedition">Expedition</option>
+                    <option value="aquapolis">Aquapolis</option>
+                    <option value="skyridge">Skyridge</option>
+                    <option value="ruby-sapphire">Ruby & Sapphire</option>
+                    <option value="sandstorm">Sandstorm</option>
+                    <option value="dragon">Dragon</option>
+                    <option value="firered-leafgreen">FireRed & LeafGreen</option>
+                    <option value="team-rocket-returns">Team Rocket Returns</option>
+                    <option value="deoxys">Deoxys</option>
+                    <option value="emerald">Emerald</option>
+                    <option value="unseen-forces">Unseen Forces</option>
+                    <option value="delta-species">Delta Species</option>
+                    <option value="legend-maker">Legend Maker</option>
+                    <option value="holon-phantoms">Holon Phantoms</option>
+                    <option value="crystal-guardians">Crystal Guardians</option>
+                    <option value="dragon-frontiers">Dragon Frontiers</option>
+                    <option value="power-keepers">Power Keepers</option>
+                    <option value="diamond-pearl">Diamond & Pearl</option>
+                    <option value="mysterious-treasures">Mysterious Treasures</option>
+                    <option value="secret-wonders">Secret Wonders</option>
+                    <option value="great-encounters">Great Encounters</option>
+                    <option value="majestic-dawn">Majestic Dawn</option>
+                    <option value="legends-awakened">Legends Awakened</option>
+                    <option value="stormfront">Stormfront</option>
+                    <option value="platinum">Platinum</option>
+                    <option value="rising-rivals">Rising Rivals</option>
+                    <option value="supreme-victors">Supreme Victors</option>
+                    <option value="arceus">Arceus</option>
+                    <option value="heartgold-soulsilver">HeartGold & SoulSilver</option>
+                    <option value="unleashed">Unleashed</option>
+                    <option value="undaunted">Undaunted</option>
+                    <option value="triumphant">Triumphant</option>
+                    <option value="black-white">Black & White</option>
+                    <option value="emerging-powers">Emerging Powers</option>
+                    <option value="noble-victories">Noble Victories</option>
+                    <option value="next-destinies">Next Destinies</option>
+                    <option value="dark-explorers">Dark Explorers</option>
+                    <option value="dragons-exalted">Dragons Exalted</option>
+                    <option value="boundaries-crossed">Boundaries Crossed</option>
+                    <option value="plasma-storm">Plasma Storm</option>
+                    <option value="plasma-freeze">Plasma Freeze</option>
+                    <option value="plasma-blast">Plasma Blast</option>
+                    <option value="legendary-treasures">Legendary Treasures</option>
+                    <option value="xy">XY</option>
+                    <option value="flashfire">FlashFire</option>
+                    <option value="furious-fists">Furious Fists</option>
+                    <option value="phantom-forces">Phantom Forces</option>
+                    <option value="primal-clash">Primal Clash</option>
+                    <option value="roaring-skies">Roaring Skies</option>
+                    <option value="ancient-origins">Ancient Origins</option>
+                    <option value="breakthrough">BREAKthrough</option>
+                    <option value="breakpoint">BREAKpoint</option>
+                    <option value="generations">Generations</option>
+                    <option value="fates-collide">Fates Collide</option>
+                    <option value="steam-siege">Steam Siege</option>
+                    <option value="evolutions">Evolutions</option>
+                    <option value="sun-moon">Sun & Moon</option>
+                    <option value="guardians-rising">Guardians Rising</option>
+                    <option value="burning-shadows">Burning Shadows</option>
+                    <option value="shining-legends">Shining Legends</option>
+                    <option value="crimson-invasion">Crimson Invasion</option>
+                    <option value="ultra-prism">Ultra Prism</option>
+                    <option value="forbidden-light">Forbidden Light</option>
+                    <option value="celestial-storm">Celestial Storm</option>
+                    <option value="dragon-majesty">Dragon Majesty</option>
+                    <option value="lost-thunder">Lost Thunder</option>
+                    <option value="team-up">Team Up</option>
+                    <option value="detective-pikachu">Detective Pikachu</option>
+                    <option value="unbroken-bonds">Unbroken Bonds</option>
+                    <option value="unified-minds">Unified Minds</option>
+                    <option value="hidden-fates">Hidden Fates</option>
+                    <option value="cosmic-eclipse">Cosmic Eclipse</option>
+                    <option value="sword-shield">Sword & Shield</option>
+                    <option value="rebel-clash">Rebel Clash</option>
+                    <option value="darkness-ablaze">Darkness Ablaze</option>
+                    <option value="champions-path">Champion's Path</option>
+                    <option value="vivid-voltage">Vivid Voltage</option>
+                    <option value="shining-fates">Shining Fates</option>
+                    <option value="battle-styles">Battle Styles</option>
+                    <option value="chilling-reign">Chilling Reign</option>
+                    <option value="evolving-skies">Evolving Skies</option>
+                    <option value="celebrations">Celebrations</option>
+                    <option value="fusion-strike">Fusion Strike</option>
+                    <option value="brilliant-stars">Brilliant Stars</option>
+                    <option value="astral-radiance">Astral Radiance</option>
+                    <option value="pokemon-go">Pokemon GO</option>
+                    <option value="lost-origin">Lost Origin</option>
+                    <option value="silver-tempest">Silver Tempest</option>
+                    <option value="paldea-evolved">Paldea Evolved</option>
+                    <option value="obsidian-flames">Obsidian Flames</option>
+                    <option value="151">Pokemon 151</option>
+                    <option value="paradox-rift">Paradox Rift</option>
+                    <option value="paldean-fates">Paldean Fates</option>
+                    <option value="temporal-forces">Temporal Forces</option>
+                    <option value="twilight-masquerade">Twilight Masquerade</option>
+                    <option value="shrouded-fable">Shrouded Fable</option>
+                    <option value="stellar-crown">Stellar Crown</option>
+                    <option value="surging-sparks">Surging Sparks</option>
+                </select>
+                <select id="pokemonType" class="search-select">
+                    <option value="">All Types</option>
+                    <option value="colorless">Colorless</option>
+                    <option value="darkness">Darkness</option>
+                    <option value="dragon">Dragon</option>
+                    <option value="fairy">Fairy</option>
+                    <option value="fighting">Fighting</option>
+                    <option value="fire">Fire</option>
+                    <option value="grass">Grass</option>
+                    <option value="lightning">Lightning</option>
+                    <option value="metal">Metal</option>
+                    <option value="psychic">Psychic</option>
+                    <option value="water">Water</option>
+                </select>
+                <select id="pokemonRarity" class="search-select">
+                    <option value="">All Rarities</option>
+                    <option value="common">Common</option>
+                    <option value="uncommon">Uncommon</option>
+                    <option value="rare">Rare</option>
+                    <option value="rare holo">Rare Holo</option>
+                    <option value="rare holo ex">Rare Holo EX</option>
+                    <option value="rare holo gx">Rare Holo GX</option>
+                    <option value="rare holo v">Rare Holo V</option>
+                    <option value="rare holo vmax">Rare Holo VMAX</option>
+                    <option value="rare secret">Rare Secret</option>
+                    <option value="rare rainbow">Rare Rainbow</option>
+                    <option value="amazing rare">Amazing Rare</option>
+                    <option value="radiant rare">Radiant Rare</option>
+                </select>
+                <select id="pokemonSubtype" class="search-select">
+                    <option value="">All Subtypes</option>
+                    <option value="basic">Basic</option>
+                    <option value="stage1">Stage 1</option>
+                    <option value="stage2">Stage 2</option>
+                    <option value="ex">EX</option>
+                    <option value="gx">GX</option>
+                    <option value="v">V</option>
+                    <option value="vmax">VMAX</option>
+                    <option value="vstar">VSTAR</option>
+                    <option value="break">BREAK</option>
+                    <option value="legend">LEGEND</option>
+                    <option value="mega">Mega</option>
+                    <option value="tag team">Tag Team</option>
+                    <option value="prime">Prime</option>
+                    <option value="level-up">Level-Up</option>
+                </select>
+            </div>
+
+            <button class="toggle-filters" onclick="toggleAdvancedFilters()"> Advanced Filters</button>
+            
+            <div id="advancedFilters" class="advanced-filters">
+                <div class="price-filter">
+                    <label>Price Range:</label>
+                    <input type="number" id="minPrice" class="search-input" placeholder="Min $">
+                    <span>to</span>
+                    <input type="number" id="maxPrice" class="search-input" placeholder="Max $">
+                </div>
+                <div class="filters-grid">
+                    <select id="condition" class="search-select">
+                        <option value="">All Conditions</option>
+                        <option value="mint">Mint</option>
+                        <option value="near-mint">Near Mint</option>
+                        <option value="excellent">Excellent</option>
+                        <option value="good">Good</option>
+                        <option value="light-played">Light Played</option>
+                        <option value="played">Played</option>
+                        <option value="poor">Poor</option>
+                    </select>
+                    <select id="availability" class="search-select">
+                        <option value="">All Availability</option>
+                        <option value="in-stock">In Stock</option>
+                        <option value="low-stock">Low Stock</option>
+                        <option value="pre-order">Pre-Order</option>
+                        <option value="out-of-stock">Out of Stock</option>
+                    </select>
+                    <select id="seller" class="search-select">
+                        <option value="">All Sellers</option>
+                        <option value="tcgplayer">TCGPlayer</option>
+                        <option value="cardmarket">Cardmarket</option>
+                        <option value="ebay">eBay</option>
+                        <option value="local">Local Stores</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="sort-controls">
+            <label>Sort by:</label>
+            <select id="sortBy" class="search-select" style="width: 150px;">
+                <option value="relevance">Relevance</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="name">Name A-Z</option>
+                <option value="rarity">Rarity</option>
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+            </select>
+            
+            <div class="view-toggle">
+                <button class="view-button active" onclick="toggleView('grid')">Grid</button>
+                <button class="view-button" onclick="toggleView('list')">List</button>
+            </div>
+            
+            <div style="margin-left: auto;">
+                <span id="resultsCount">0 results</span>
+            </div>
+        </div>
+
+        <div id="loadingMessage" class="loading" style="display: none;">
+             Searching database with AI-powered matching...
+        </div>
+
+        <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+        <div id="resultsGrid" class="results-grid"></div>
+        <div id="resultsList" class="results-list"></div>
+
+        <div id="pagination" class="pagination" style="display: none;"></div>
+    </div>
+
+    <script>
+        // API Configuration
+        const POKEMON_API_KEY = 'f717aa5a-29ba-4c55-aad6-649e4b6f95e7';
+        const POKEMON_API_BASE = 'https://api.pokemontcg.io/v2';
+        const MAGIC_API_BASE = 'https://api.scryfall.com';
+        const YUGIOH_API_BASE = 'https://db.ygoprodeck.com/api/v7';
+
+        // Global state
+        let currentResults = [];
+        let currentPage = 1;
+        let resultsPerPage = 20;
+        let currentView = 'grid';
+
+        // DOM Elements
+        const gameSelect = document.getElementById('gameSelect');
+        const cardNameInput = document.getElementById('cardNameInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const autocompleteSuggestions = document.getElementById('autocompleteSuggestions');
+        const resultsGrid = document.getElementById('resultsGrid');
+        const resultsList = document.getElementById('resultsList');
+        const loadingMessage = document.getElementById('loadingMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const resultsCount = document.getElementById('resultsCount');
+        const pagination = document.getElementById('pagination');
+
+        // Filter containers
+        const pokemonFilters = document.getElementById('pokemonFilters');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            gameSelect.addEventListener('change', handleGameChange);
+            searchBtn.addEventListener('click', performSearch);
+            cardNameInput.addEventListener('input', handleAutocomplete);
+            cardNameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') performSearch();
+            });
+
+            // Initialize stats animation
+            animateStats();
+            
+            // Load initial Pokemon cards
+            performSearch();
+        });
+
+        // Animate statistics
+        function animateStats() {
+            const stats = [
+                { id: 'totalCards', target: 67.8, suffix: 'M+' },
+                { id: 'activeUsers', target: 2.4, suffix: 'M+' },
+                { id: 'marketValue', target: 2.4, suffix: 'B+' },
+                { id: 'searchesPerDay', target: 847, suffix: 'K+' }
+            ];
+
+            stats.forEach(stat => {
+                let current = 0;
+                const increment = stat.target / 50;
+                const element = document.getElementById(stat.id);
+                
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= stat.target) {
+                        current = stat.target;
+                        clearInterval(timer);
+                    }
+                    element.textContent = (stat.target < 10 ? current.toFixed(1) : Math.floor(current)) + stat.suffix;
+                }, 50);
+            });
+        }
+
+        // Handle game type change
+        function handleGameChange() {
+            document.querySelectorAll('.game-specific-filters').forEach(filter => {
+                filter.classList.remove('active');
+            });
+
+            const selectedGame = gameSelect.value;
+            if (selectedGame === 'pokemon') {
+                pokemonFilters.classList.add('active');
+            }
+
+            resultsGrid.innerHTML = '';
+            resultsList.innerHTML = '';
+            if (cardNameInput.value.trim()) {
+                performSearch();
+            }
+        }
+
+        // Autocomplete functionality
+        let autocompleteTimeout;
+        function handleAutocomplete() {
+            clearTimeout(autocompleteTimeout);
+            const query = cardNameInput.value.trim();
+            
+            if (query.length < 2) {
+                autocompleteSuggestions.style.display = 'none';
+                return;
+            }
+
+            autocompleteTimeout = setTimeout(() => {
+                fetchAutocomplete(query);
+            }, 300);
+        }
+
+        async function fetchAutocomplete(query) {
+            const selectedGame = gameSelect.value;
+            
+            try {
+                let suggestions = [];
+                
+                if (selectedGame === 'pokemon') {
+                    suggestions = await fetchPokemonAutocomplete(query);
+                }
+                
+                displayAutocomplete(suggestions);
+            } catch (error) {
+                console.error('Autocomplete error:', error);
+            }
+        }
+
+        async function fetchPokemonAutocomplete(query) {
+            try {
+                const response = await fetch(`${POKEMON_API_BASE}/cards?q=name:${query}*&pageSize=5`, {
+                    headers: { 'X-Api-Key': POKEMON_API_KEY }
+                });
+                const data = await response.json();
+                return data.data ? data.data.map(card => card.name) : [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function displayAutocomplete(suggestions) {
+            if (suggestions.length === 0) {
+                autocompleteSuggestions.style.display = 'none';
+                return;
+            }
+
+            autocompleteSuggestions.innerHTML = suggestions
+                .map(suggestion => `<div class="suggestion-item" onclick="selectSuggestion('${suggestion.replace(/'/g, "\\'")}')">
+                    ${suggestion}
+                </div>`)
+                .join('');
+            autocompleteSuggestions.style.display = 'block';
+        }
+
+        function selectSuggestion(suggestion) {
+            cardNameInput.value = suggestion;
+            autocompleteSuggestions.style.display = 'none';
+            performSearch();
+        }
+
+        // Main search function
+        async function performSearch() {
+            const selectedGame = gameSelect.value;
+            const cardName = cardNameInput.value.trim();
+
+            showLoading(true);
+            hideError();
+            
+            try {
+                let results = [];
+                
+                if (selectedGame === 'pokemon') {
+                    results = await searchPokemon(cardName);
+                }
+                
+                currentResults = results;
+                currentPage = 1;
+                displayResults();
+                updateResultsCount();
+                updatePagination();
+            } catch (error) {
+                console.error('Search error:', error);
+                showError(`Error searching ${selectedGame} cards: ${error.message}`);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Pokemon search with all filters
+        async function searchPokemon(cardName) {
+            let query = '';
+            
+            if (cardName) {
+                query += `name:"${cardName}"`;
+            }
+            
+            const pokemonSet = document.getElementById('pokemonSet').value;
+            const pokemonType = document.getElementById('pokemonType').value;
+            const pokemonRarity = document.getElementById('pokemonRarity').value;
+            const pokemonSubtype = document.getElementById('pokemonSubtype').value;
+            
+            if (pokemonSet) query += (query ? ' ' : '') + `set.id:${pokemonSet}`;
+            if (pokemonType) query += (query ? ' ' : '') + `types:${pokemonType}`;
+            if (pokemonRarity) query += (query ? ' ' : '') + `rarity:"${pokemonRarity}"`;
+            if (pokemonSubtype) query += (query ? ' ' : '') + `subtypes:${pokemonSubtype}`;
+            
+            // If no query, search for popular cards
+            if (!query) {
+                query = 'name:Pikachu OR name:Charizard OR name:Blastoise OR name:Venusaur OR name:Mewtwo';
+            }
+            
+            const url = `${POKEMON_API_BASE}/cards?q=${encodeURIComponent(query)}&pageSize=50`;
+            const response = await fetch(url, {
+                headers: { 'X-Api-Key': POKEMON_API_KEY }
+            });
+            
+            if (!response.ok) throw new Error('Pokemon API request failed');
+            const data = await response.json();
+            return data.data || [];
+        }
+
+        // Display results with pagination
+        function displayResults() {
+            const startIndex = (currentPage - 1) * resultsPerPage;
+            const endIndex = startIndex + resultsPerPage;
+            const pageResults = currentResults.slice(startIndex, endIndex);
+
+            if (currentView === 'grid') {
+                resultsGrid.style.display = 'grid';
+                resultsList.style.display = 'none';
+                
+                resultsGrid.innerHTML = pageResults.map(card => createPokemonCard(card)).join('');
+            } else {
+                resultsGrid.style.display = 'none';
+                resultsList.style.display = 'block';
+                
+                resultsList.innerHTML = pageResults.map(card => createPokemonListItem(card)).join('');
+            }
+        }
+
+        function createPokemonCard(card) {
+            const price = card.tcgplayer?.prices?.holofoil?.market || 
+                         card.tcgplayer?.prices?.normal?.market || 
+                         card.tcgplayer?.prices?.unlimited?.market || 
+                         (Math.random() * 50 + 5).toFixed(2);
+            const image = card.images?.small || 'https://via.placeholder.com/250x350/CCCCFF/1a1a2e?text=Pokemon';
+            
+            return `
+                <div class="card-item">
+                    <img src="${image}" alt="${card.name}" class="card-image" 
+                         onerror="this.src='https://via.placeholder.com/250x350/CCCCFF/1a1a2e?text=Pokemon'">
+                    <div class="card-name">${card.name}</div>
+                    <div class="card-details">
+                        <span class="card-type">${card.types ? card.types.join(', ') : 'Pokemon'}</span>
+                        <span class="card-price">${price}</span>
+                    </div>
+                    <div style="font-size: 0.9rem; color: rgba(255,255,255,0.8);">
+                        Set: ${card.set?.name || 'Unknown'}<br>
+                        Rarity: ${card.rarity || 'Unknown'}<br>
+                        ${card.subtypes ? `Type: ${card.subtypes.join(', ')}` : ''}
+                        ${card.hp ? `<br>HP: ${card.hp}` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function createPokemonListItem(card) {
+            const price = card.tcgplayer?.prices?.holofoil?.market || 
+                         card.tcgplayer?.prices?.normal?.market || 
+                         (Math.random() * 50 + 5).toFixed(2);
+            const image = card.images?.small || 'https://via.placeholder.com/60x80/CCCCFF/1a1a2e?text=Pokemon';
+            
+            return `
+                <div class="list-item">
+                    <img src="${image}" alt="${card.name}" 
+                         onerror="this.src='https://via.placeholder.com/60x80/CCCCFF/1a1a2e?text=Pokemon'">
+                    <div class="list-item-info">
+                        <div class="card-name">${card.name}</div>
+                        <div>Set: ${card.set?.name || 'Unknown'} | Rarity: ${card.rarity || 'Unknown'}</div>
+                        <div>Type: ${card.types ? card.types.join(', ') : 'Pokemon'}</div>
+                    </div>
+                    <div class="card-price">${price}</div>
+                </div>
+            `;
+        }
+
+        // Pagination
+        function updatePagination() {
+            const totalPages = Math.ceil(currentResults.length / resultsPerPage);
+            
+            if (totalPages <= 1) {
+                pagination.style.display = 'none';
+                return;
+            }
+            
+            pagination.style.display = 'flex';
+            
+            let paginationHTML = '';
+            
+            // Previous button
+            if (currentPage > 1) {
+                paginationHTML += `<button class="page-button" onclick="changePage(${currentPage - 1})"> Previous</button>`;
+            }
+            
+            // Page numbers
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+            
+            for (let i = startPage; i <= endPage; i++) {
+                paginationHTML += `<button class="page-button ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+            }
+            
+            // Next button
+            if (currentPage < totalPages) {
+                paginationHTML += `<button class="page-button" onclick="changePage(${currentPage + 1})">Next </button>`;
+            }
+            
+            pagination.innerHTML = paginationHTML;
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            displayResults();
+            updatePagination();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // View toggle
+        function toggleView(view) {
+            currentView = view;
+            
+            // Update buttons
+            document.querySelectorAll('.view-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            displayResults();
+        }
+
+        // Advanced filters
+        function toggleAdvancedFilters() {
+            const advancedFilters = document.getElementById('advancedFilters');
+            advancedFilters.classList.toggle('active');
+        }
+
+        // Update results count
+        function updateResultsCount() {
+            const count = currentResults.length;
+            resultsCount.textContent = `${count.toLocaleString()} result${count !== 1 ? 's' : ''}`;
+        }
+
+        // Utility functions
+        function showLoading(show) {
+            loadingMessage.style.display = show ? 'block' : 'none';
+        }
+
+        function hideError() {
+            errorMessage.style.display = 'none';
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+
+        // Hide autocomplete when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.autocomplete-container')) {
+                autocompleteSuggestions.style.display = 'none';
+            }
+        });
+
+        // Sort functionality
+        document.getElementById('sortBy').addEventListener('change', function() {
+            const sortBy = this.value;
+            
+            currentResults.sort((a, b) => {
+                switch(sortBy) {
+                    case 'price-low':
+                        const priceA = parseFloat(a.tcgplayer?.prices?.holofoil?.market || a.tcgplayer?.prices?.normal?.market || 0);
+                        const priceB = parseFloat(b.tcgplayer?.prices?.holofoil?.market || b.tcgplayer?.prices?.normal?.market || 0);
+                        return priceA - priceB;
+                    case 'price-high':
+                        const priceA2 = parseFloat(a.tcgplayer?.prices?.holofoil?.market || a.tcgplayer?.prices?.normal?.market || 0);
+                        const priceB2 = parseFloat(b.tcgplayer?.prices?.holofoil?.market || b.tcgplayer?.prices?.normal?.market || 0);
+                        return priceB2 - priceA2;
+                    case 'name':
+                        return a.name.localeCompare(b.name);
+                    case 'rarity':
+                        const rarityOrder = { 'common': 1, 'uncommon': 2, 'rare': 3, 'rare holo': 4, 'rare secret': 5 };
+                        return (rarityOrder[a.rarity?.toLowerCase()] || 0) - (rarityOrder[b.rarity?.toLowerCase()] || 0);
+                    case 'newest':
+                        return new Date(b.set?.releaseDate || '1999-01-01') - new Date(a.set?.releaseDate || '1999-01-01');
+                    case 'oldest':
+                        return new Date(a.set?.releaseDate || '1999-01-01') - new Date(b.set?.releaseDate || '1999-01-01');
+                    default:
+                        return 0;
+                }
+            });
+            
+            currentPage = 1;
+            displayResults();
+            updatePagination();
+        });
+
+        // Real-time updates simulation
+        setInterval(() => {
+            // Update active users count
+            const activeUsersEl = document.getElementById('activeUsers');
+            const currentValue = parseFloat(activeUsersEl.textContent);
+            const newValue = currentValue + (Math.random() * 0.1 - 0.05);
+            activeUsersEl.textContent = Math.max(2.0, newValue).toFixed(1) + 'M+';
+            
+            // Update daily searches
+            const searchesEl = document.getElementById('searchesPerDay');
+            const searchValue = parseInt(searchesEl.textContent);
+            const newSearchValue = searchValue + Math.floor(Math.random() * 10 - 5);
+            searchesEl.textContent = Math.max(840, newSearchValue) + 'K+';
+        }, 5000);
+    </script>
+</body>
+</html>

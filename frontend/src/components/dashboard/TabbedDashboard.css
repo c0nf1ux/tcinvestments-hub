@@ -1,0 +1,68 @@
+﻿.tabbed-dashboard {
+  background: linear-gradient(145deg, var(--magic-dark-gray), var(--magic-charcoal));
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 15px;
+}
+
+.tab-navigation {
+  display: flex;
+  background: var(--magic-black);
+  border-bottom: 2px solid var(--periwinkle-dark);
+}
+
+.tab-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 15px 10px;
+  background: transparent;
+  border: none;
+  color: var(--periwinkle-secondary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-bottom: 3px solid transparent;
+}
+
+.tab-btn:hover {
+  background: rgba(197, 197, 255, 0.1);
+  color: var(--periwinkle-light);
+}
+
+.tab-btn.active {
+  color: var(--periwinkle-primary);
+  border-bottom-color: var(--periwinkle-primary);
+  background: rgba(197, 197, 255, 0.15);
+}
+
+.tab-icon {
+  font-size: 1.1em;
+}
+
+.tab-label {
+  font-weight: 500;
+  font-size: 0.9em;
+}
+
+.tab-content {
+  padding: 0;
+}
+
+/* Responsive tabs */
+@media (max-width: 768px) {
+  .tab-btn {
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 8px;
+  }
+  
+  .tab-label {
+    font-size: 0.8em;
+  }
+  
+  .tab-icon {
+    font-size: 1em;
+  }
+}

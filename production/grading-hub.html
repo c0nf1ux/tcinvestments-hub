@@ -1,0 +1,787 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> BRAINSTORM Grading Hub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: #161b22;
+            border-bottom: 1px solid #30363d;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo { 
+            font-size: 1.5rem; 
+            font-weight: bold; 
+            color: #58a6ff;
+            text-decoration: none;
+        }
+        
+        .nav-items { display: flex; gap: 2rem; align-items: center; }
+        
+        .nav-item {
+            color: #8b949e;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            color: #e6edf3;
+            background: #21262d;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #21262d;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffd700, #ffb347, #ff6b6b, #4ecdc4, #45b7d1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 400% 400%;
+            animation: gradient 4s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #8b949e;
+            margin-bottom: 1rem;
+        }
+
+        .destroyer-badge {
+            display: inline-block;
+            background: #da3633;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .grading-services {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .service-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .service-card:hover::before {
+            left: 100%;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: #ffd700;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .service-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .psa-logo { background: linear-gradient(135deg, #ff6b6b, #ee5a52); }
+        .bgs-logo { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .sgc-logo { background: linear-gradient(135deg, #4ecdc4, #44a08d); }
+        .cgc-logo { background: linear-gradient(135deg, #ffd700, #ffb347); }
+
+        .service-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #e6edf3;
+        }
+
+        .service-tagline {
+            color: #8b949e;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .service-price {
+            font-size: 1.2rem;
+            color: #238636;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .service-features {
+            list-style: none;
+            text-align: left;
+            font-size: 0.9rem;
+            color: #8b949e;
+        }
+
+        .service-features li {
+            margin-bottom: 0.5rem;
+            padding-left: 1rem;
+            position: relative;
+        }
+
+        .service-features li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            color: #238636;
+            font-weight: bold;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .submission-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-weight: bold;
+            color: #e6edf3;
+        }
+
+        .form-input, .form-select {
+            padding: 0.8rem;
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #e6edf3;
+            font-size: 1rem;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.3);
+        }
+
+        .card-upload {
+            border: 2px dashed #30363d;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .card-upload:hover {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #8b949e;
+        }
+
+        .submit-btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #ffd700, #ffb347);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+        }
+
+        .roi-calculator {
+            background: #21262d;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .roi-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .roi-result {
+            text-align: center;
+            padding: 1rem;
+            background: #161b22;
+            border-radius: 8px;
+            border: 2px solid #238636;
+        }
+
+        .roi-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #238636;
+            margin-bottom: 0.5rem;
+        }
+
+        .submissions-table {
+            overflow-x: auto;
+        }
+
+        .submissions-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .submissions-table th,
+        .submissions-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .submissions-table th {
+            background: #21262d;
+            font-weight: bold;
+            color: #e6edf3;
+        }
+
+        .submissions-table tr:hover {
+            background: #21262d;
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status-submitted { background: #58a6ff; color: white; }
+        .status-grading { background: #ffd700; color: #000; }
+        .status-complete { background: #238636; color: white; }
+        .status-returned { background: #7c3aed; color: white; }
+
+        .grade-result {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.3rem 0.8rem;
+            background: #ffd700;
+            color: #000;
+            border-radius: 15px;
+            font-weight: bold;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-box {
+            background: #21262d;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #8b949e;
+            font-size: 0.9rem;
+        }
+
+        .grading-tips {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .tip-item {
+            background: #21262d;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .tip-title {
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 0.5rem;
+        }
+
+        .tip-content {
+            color: #8b949e;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 1200px) {
+            .grading-services {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grading-services {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .roi-inputs {
+                grid-template-columns: 1fr;
+            }
+            
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="trading-dashboard.html" class="logo"> BRAINSTORM</a>
+        <div class="nav-items">
+            <a href="trading-dashboard.html" class="nav-item">Dashboard</a>
+            <a href="advanced-search.html" class="nav-item">Search</a>
+            <a href="sports-card-hub.html" class="nav-item">Sports Cards</a>
+            <a href="ai-deck-builder.html" class="nav-item">Deck Builder</a>
+            <a href="market-analytics.html" class="nav-item">Market</a>
+            <a href="community-platform.html" class="nav-item">Community</a>
+            <a href="marketplace.html" class="nav-item">Marketplace</a>
+            <a href="#" class="nav-item active">Grading</a>
+        </div>
+        <div class="user-profile">
+            <span></span>
+            <span>Heath Davis</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1> Grading Hub</h1>
+            <p class="subtitle">Unified Grading Service Integration & ROI Calculator</p>
+            <div class="destroyer-badge">PSA/BGS DESTROYER</div>
+        </div>
+
+        <div class="grading-services">
+            <div class="service-card" onclick="selectService('PSA')">
+                <div class="service-logo psa-logo">PSA</div>
+                <div class="service-name">PSA Grading</div>
+                <div class="service-tagline">Professional Sports Authenticator</div>
+                <div class="service-price">From $25</div>
+                <ul class="service-features">
+                    <li>Industry leader</li>
+                    <li>Highest resale value</li>
+                    <li>10-point scale</li>
+                    <li>Authentication included</li>
+                    <li>15-20 business days</li>
+                </ul>
+            </div>
+
+            <div class="service-card" onclick="selectService('BGS')">
+                <div class="service-logo bgs-logo">BGS</div>
+                <div class="service-name">BGS Grading</div>
+                <div class="service-tagline">Beckett Grading Services</div>
+                <div class="service-price">From $22</div>
+                <ul class="service-features">
+                    <li>Sub-grade breakdown</li>
+                    <li>Black label 10s</li>
+                    <li>Detailed analysis</li>
+                    <li>Premium for pristine</li>
+                    <li>10-15 business days</li>
+                </ul>
+            </div>
+
+            <div class="service-card" onclick="selectService('SGC')">
+                <div class="service-logo sgc-logo">SGC</div>
+                <div class="service-name">SGC Grading</div>
+                <div class="service-tagline">Sportscard Guaranty</div>
+                <div class="service-price">From $20</div>
+                <ul class="service-features">
+                    <li>Vintage specialist</li>
+                    <li>Tru-View holders</li>
+                    <li>Conservative grading</li>
+                    <li>Lower cost option</li>
+                    <li>12-18 business days</li>
+                </ul>
+            </div>
+
+            <div class="service-card" onclick="selectService('CGC')">
+                <div class="service-logo cgc-logo">CGC</div>
+                <div class="service-name">CGC Cards</div>
+                <div class="service-tagline">Certified Guaranty Company</div>
+                <div class="service-price">From $18</div>
+                <ul class="service-features">
+                    <li>TCG specialist</li>
+                    <li>Perfect Fit technology</li>
+                    <li>Competitive pricing</li>
+                    <li>Fast turnaround</li>
+                    <li>8-12 business days</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <span class="stat-icon"></span>
+                <div class="stat-value">8.4M+</div>
+                <div class="stat-label">Cards Graded</div>
+            </div>
+            <div class="stat-box">
+                <span class="stat-icon"></span>
+                <div class="stat-value">$2.8B+</div>
+                <div class="stat-label">Value Added</div>
+            </div>
+            <div class="stat-box">
+                <span class="stat-icon"></span>
+                <div class="stat-value">94%</div>
+                <div class="stat-label">Success Rate</div>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <div class="section">
+                <div class="section-header">
+                    <h2> Submit for Grading</h2>
+                    <span style="color: #8b949e;">Quick submission</span>
+                </div>
+
+                <div class="submission-form">
+                    <div class="form-group">
+                        <label class="form-label">Grading Service</label>
+                        <select class="form-select" id="gradingService">
+                            <option value="psa">PSA - $25 (15-20 days)</option>
+                            <option value="bgs">BGS - $22 (10-15 days)</option>
+                            <option value="sgc">SGC - $20 (12-18 days)</option>
+                            <option value="cgc">CGC - $18 (8-12 days)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Card Details</label>
+                        <input type="text" class="form-input" placeholder="Card name and set" id="cardName">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Estimated Value</label>
+                        <input type="number" class="form-input" placeholder="Current raw value" id="rawValue">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Service Level</label>
+                        <select class="form-select" id="serviceLevel">
+                            <option value="economy">Economy (20+ days)</option>
+                            <option value="regular">Regular (10-15 days)</option>
+                            <option value="express">Express (5-7 days)</option>
+                            <option value="super-express">Super Express (2-3 days)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Upload Card Photos</label>
+                        <div class="card-upload" onclick="uploadPhotos()">
+                            <div class="upload-icon"></div>
+                            <p>Click to upload front and back photos</p>
+                            <p style="font-size: 0.9rem; color: #8b949e; margin-top: 0.5rem;">
+                                High-resolution images help ensure accurate grading
+                            </p>
+                        </div>
+                    </div>
+
+                    <button class="submit-btn" onclick="submitForGrading()">
+                         Submit for Grading
+                    </button>
+                </div>
+
+                <div class="roi-calculator">
+                    <h3 style="margin-bottom: 1rem; text-align: center; color: #ffd700;"> ROI Calculator</h3>
+                    
+                    <div class="roi-inputs">
+                        <div class="form-group">
+                            <label class="form-label">Raw Card Value</label>
+                            <input type="number" class="form-input" placeholder="$100" id="roiRawValue" oninput="calculateROI()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Expected Grade</label>
+                            <select class="form-select" id="expectedGrade" onchange="calculateROI()">
+                                <option value="10">Grade 10</option>
+                                <option value="9">Grade 9</option>
+                                <option value="8">Grade 8</option>
+                                <option value="7">Grade 7</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="roi-result" id="roiResult">
+                        <div class="roi-value">+347%</div>
+                        <div>Potential ROI</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <h2> Your Submissions</h2>
+                    <span style="color: #8b949e;">12 active</span>
+                </div>
+
+                <div class="submissions-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Card</th>
+                                <th>Service</th>
+                                <th>Status</th>
+                                <th>Grade</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <strong>Charizard Base Set</strong><br>
+                                    <small style="color: #8b949e;">Submitted 3 days ago</small>
+                                </td>
+                                <td>PSA</td>
+                                <td><span class="status-badge status-grading">Grading</span></td>
+                                <td>-</td>
+                                <td>$4,200</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>LeBron James Rookie</strong><br>
+                                    <small style="color: #8b949e;">Completed 1 week ago</small>
+                                </td>
+                                <td>BGS</td>
+                                <td><span class="status-badge status-complete">Complete</span></td>
+                                <td><span class="grade-result"> 9.5</span></td>
+                                <td>$28,400</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Black Lotus Alpha</strong><br>
+                                    <small style="color: #8b949e;">Submitted 1 week ago</small>
+                                </td>
+                                <td>PSA</td>
+                                <td><span class="status-badge status-grading">Grading</span></td>
+                                <td>-</td>
+                                <td>$38,500</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Tom Brady Rookie</strong><br>
+                                    <small style="color: #8b949e;">Returned 2 days ago</small>
+                                </td>
+                                <td>PSA</td>
+                                <td><span class="status-badge status-returned">Returned</span></td>
+                                <td><span class="grade-result"> 9</span></td>
+                                <td>$24,800</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Time Walk Beta</strong><br>
+                                    <small style="color: #8b949e;">Submitted 5 days ago</small>
+                                </td>
+                                <td>SGC</td>
+                                <td><span class="status-badge status-submitted">Submitted</span></td>
+                                <td>-</td>
+                                <td>$12,600</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="grading-tips">
+            <div class="section-header">
+                <h2> Grading Tips & Best Practices</h2>
+                <span style="color: #8b949e;">Maximize your grades</span>
+            </div>
+
+            <div class="tips-grid">
+                <div class="tip-item">
+                    <div class="tip-title"> Photo Quality</div>
+                    <div class="tip-content">
+                        Use high-resolution photos with good lighting. Show all four corners, edges, and surface clearly. Include close-ups of any potential flaws.
+                    </div>
+                </div>
+
+                <div class="tip-item">
+                    <div class="tip-title"> Packaging</div>
+                    <div class="tip-content">
+                        Use penny sleeves and toploaders. Secure with team bags and bubble wrap. Never use tape directly on the card or holder.
+                    </div>
+                </div>
+
+                <div class="tip-item">
+                    <div class="tip-title"> Grade Expectations</div>
+                    <div class="tip-content">
+                        Be realistic about condition. Minor flaws can drop grades significantly. Consider professional pre-screening for high-value cards.
+                    </div>
+                </div>
+
+                <div class="tip-item">
+                    <div class="tip-title"> ROI Analysis</div>
+                    <div class="tip-content">
+                        Factor in grading costs, shipping, and insurance. Not all cards benefit from grading. Use our ROI calculator to make informed decisions.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedService = 'PSA';
+
+        function selectService(service) {
+            selectedService = service;
+            console.log(`Selected grading service: ${service}`);
+            
+            // Update the form
+            document.getElementById('gradingService').value = service.toLowerCase();
+            
+            // Highlight selected service
+            document.querySelectorAll('.service-card').forEach(card => {
+                card.style.border = '1px solid #30363d';
+            });
+            event.target.closest('.service-card').style.border = '2px solid #ffd700';
+            
+            alert(` ${service} Selected!\n\nYou've chosen ${service} for your card grading. This service offers the best value for your specific needs.`);
+        }
+
+        function uploadPhotos() {
+            console.log(' Grading Hub - PSA/BGS Destroyer Loaded');
+        console.log(' Services: PSA, BGS, SGC, CGC unified platform');
+        console.log(' ROI Calculator: Active with real-time calculations');
+        console.log(' Submission Tracking: 12 active submissions');
+        console.log(' Target: 8M+ grading service users for capture');
+        console.log(' Superior features: Unified platform, ROI calculator, submission tracking');
+    </script>
+</body>
+</html>

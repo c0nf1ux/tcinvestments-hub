@@ -1,0 +1,971 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> BRAINSTORM Tournament Tracker</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: #161b22;
+            border-bottom: 1px solid #30363d;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo { 
+            font-size: 1.5rem; 
+            font-weight: bold; 
+            color: #58a6ff;
+            text-decoration: none;
+        }
+        
+        .nav-items { display: flex; gap: 2rem; align-items: center; }
+        
+        .nav-item {
+            color: #8b949e;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            color: #e6edf3;
+            background: #21262d;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #21262d;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7, #dda0dd, #98d8c8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 500% 500%;
+            animation: gradient 5s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #8b949e;
+            margin-bottom: 1rem;
+        }
+
+        .destroyer-badge {
+            display: inline-block;
+            background: #da3633;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .tournament-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .stat-card:hover::before {
+            left: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: #ff6b6b;
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #8b949e;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-change {
+            font-size: 0.9rem;
+            color: #238636;
+            font-weight: bold;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .live-tournaments {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .tournament-item {
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .tournament-item:hover {
+            border-color: #ff6b6b;
+            transform: translateY(-2px);
+        }
+
+        .tournament-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .tournament-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #e6edf3;
+        }
+
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #ff6b6b;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .live-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: white;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .tournament-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-item {
+            text-align: center;
+            padding: 0.8rem;
+            background: #161b22;
+            border-radius: 6px;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 0.3rem;
+        }
+
+        .detail-label {
+            color: #8b949e;
+            font-size: 0.8rem;
+        }
+
+        .tournament-progress {
+            background: #161b22;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #30363d;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .standings-table {
+            overflow-x: auto;
+        }
+
+        .standings-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .standings-table th,
+        .standings-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .standings-table th {
+            background: #21262d;
+            font-weight: bold;
+            color: #e6edf3;
+        }
+
+        .standings-table tr:hover {
+            background: #21262d;
+        }
+
+        .player-rank {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .rank-1 { background: #ffd700; color: #000; }
+        .rank-2 { background: #c0c0c0; color: #000; }
+        .rank-3 { background: #cd7f32; color: white; }
+        .rank-other { background: #58a6ff; }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .player-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .player-details {
+            flex: 1;
+        }
+
+        .player-name {
+            font-weight: bold;
+            margin-bottom: 0.2rem;
+        }
+
+        .player-deck {
+            color: #8b949e;
+            font-size: 0.9rem;
+        }
+
+        .win-loss {
+            font-weight: bold;
+        }
+
+        .wins { color: #238636; }
+        .losses { color: #da3633; }
+
+        .meta-analysis {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .meta-item {
+            background: #21262d;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .meta-item:hover {
+            transform: translateY(-3px);
+            border: 1px solid #ff6b6b;
+        }
+
+        .meta-deck {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .meta-name {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .meta-percentage {
+            font-size: 1.2rem;
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .filters-section {
+            background: #21262d;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-weight: bold;
+            color: #e6edf3;
+            font-size: 0.9rem;
+        }
+
+        .filter-select {
+            padding: 0.6rem;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #e6edf3;
+            font-size: 0.9rem;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #ff6b6b;
+        }
+
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .tournament-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .meta-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .tournament-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .tournament-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="trading-dashboard.html" class="logo"> BRAINSTORM</a>
+        <div class="nav-items">
+            <a href="trading-dashboard.html" class="nav-item">Dashboard</a>
+            <a href="advanced-search.html" class="nav-item">Search</a>
+            <a href="sports-card-hub.html" class="nav-item">Sports Cards</a>
+            <a href="ai-deck-builder.html" class="nav-item">Deck Builder</a>
+            <a href="market-analytics.html" class="nav-item">Market</a>
+            <a href="community-platform.html" class="nav-item">Community</a>
+            <a href="marketplace.html" class="nav-item">Marketplace</a>
+            <a href="grading-hub.html" class="nav-item">Grading</a>
+            <a href="#" class="nav-item active">Tournaments</a>
+        </div>
+        <div class="user-profile">
+            <span></span>
+            <span>Heath Davis</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1> Tournament Tracker</h1>
+            <p class="subtitle">Live Tournament Results & Competitive Meta Analysis</p>
+            <div class="destroyer-badge">COMPETITION DESTROYER</div>
+        </div>
+
+        <div class="tournament-stats">
+            <div class="stat-card">
+                <span class="stat-icon"></span>
+                <div class="stat-value">847</div>
+                <div class="stat-label">Active Tournaments</div>
+                <div class="stat-change">+24 today</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon"></span>
+                <div class="stat-value">24.8K</div>
+                <div class="stat-label">Players Online</div>
+                <div class="stat-change">+12.4% vs yesterday</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon"></span>
+                <div class="stat-value">$2.4M</div>
+                <div class="stat-label">Prize Pool Total</div>
+                <div class="stat-change">+18.7% this month</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon"></span>
+                <div class="stat-value">94%</div>
+                <div class="stat-label">Meta Accuracy</div>
+                <div class="stat-change">AI-powered analysis</div>
+            </div>
+        </div>
+
+        <div class="filters-section">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <div class="filter-label">Game Format</div>
+                    <select class="filter-select">
+                        <option>All Formats</option>
+                        <option>Magic: Commander</option>
+                        <option>Magic: Standard</option>
+                        <option>Magic: Modern</option>
+                        <option>Pokemon TCG</option>
+                        <option>Yu-Gi-Oh!</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <div class="filter-label">Tournament Type</div>
+                    <select class="filter-select">
+                        <option>All Types</option>
+                        <option>Live Events</option>
+                        <option>Online Events</option>
+                        <option>Championship</option>
+                        <option>Local Store</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <div class="filter-label">Prize Range</div>
+                    <select class="filter-select">
+                        <option>Any Prize</option>
+                        <option>$1K - $5K</option>
+                        <option>$5K - $25K</option>
+                        <option>$25K - $100K</option>
+                        <option>$100K+</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <div class="filter-label">Region</div>
+                    <select class="filter-select">
+                        <option>Worldwide</option>
+                        <option>North America</option>
+                        <option>Europe</option>
+                        <option>Asia Pacific</option>
+                        <option>Online Only</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-layout">
+            <div class="section">
+                <div class="section-header">
+                    <h2> Live Tournaments</h2>
+                    <span style="color: #8b949e;">12 events running</span>
+                </div>
+
+                <div class="live-tournaments">
+                    <div class="tournament-item" onclick="watchTournament('Pro Tour Championship')">
+                        <div class="tournament-header">
+                            <div class="tournament-name"> Pro Tour Championship</div>
+                            <div class="live-badge">
+                                <div class="live-indicator"></div>
+                                LIVE
+                            </div>
+                        </div>
+                        <div class="tournament-details">
+                            <div class="detail-item">
+                                <div class="detail-value">847</div>
+                                <div class="detail-label">Players</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-value">Round 8</div>
+                                <div class="detail-label">Current</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-value">$250K</div>
+                                <div class="detail-label">Prize Pool</div>
+                            </div>
+                        </div>
+                        <div class="tournament-progress">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span>Tournament Progress</span>
+                                <span>73%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 73%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tournament-item" onclick="watchTournament('Modern Masters Cup')">
+                        <div class="tournament-header">
+                            <div class="tournament-name"> Modern Masters Cup</div>
+                            <div class="live-badge">
+                                <div class="live-indicator"></div>
+                                LIVE
+                            </div>
+                        </div>
+                        <div class="tournament-details">
+                            <div class="detail-item">
+                                <div class="detail-value">324</div>
+                                <div class="detail-label">Players</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-value">Round 6</div>
+                                <div class="detail-label">Current</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-value">$50K</div>
+                                <div class="detail-label">Prize Pool</div>
+                            </div>
+                        </div>
+                        <div class="tournament-progress">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span>Tournament Progress</span>
+                                <span>45%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 45%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tournament-item" onclick="watchTournament('Pokemon World Championship')">
+                        <div class="tournament-header">
+                            <div class="tournament-name"> Pokemon World Championship</div>
+                            <div class="live-badge">
+                                <div class="live-indicator"></div>
+                                LIVE
+                            </div>
+                        </div>
+                        <div class="tournament-details">
+                            <div class="detail-item">
+                                <div class="detail-value">512</div>
+                                <div class="detail-label">Players</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-value">Top 8</div>
+                                <div class="detail-label">Current</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-value">$100K</div>
+                                <div class="detail-label">Prize Pool</div>
+                            </div>
+                        </div>
+                        <div class="tournament-progress">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span>Tournament Progress</span>
+                                <span>89%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 89%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tournament-item" onclick="watchTournament('Commander League Finals')">
+                        <div class="tournament-header">
+                            <div class="tournament-name"> Commander League Finals</div>
+                            <div class="live-badge">
+                                <div class="live-indicator"></div>
+                                LIVE
+                            </div>
+                        </div>
+                        <div class="tournament-details">
+                            <div class="detail-item">
+                                <div class="detail-value">128</div>
+                                <div class="detail-label">Players</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-value">Round 4</div>
+                                <div class="detail-label">Current</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-value">$25K</div>
+                                <div class="detail-label">Prize Pool</div>
+                            </div>
+                        </div>
+                        <div class="tournament-progress">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span>Tournament Progress</span>
+                                <span>31%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 31%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <h2> Current Standings</h2>
+                    <span style="color: #8b949e;">Pro Tour Championship</span>
+                </div>
+
+                <div class="standings-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Player</th>
+                                <th>Record</th>
+                                <th>Points</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="player-rank rank-1">1</div>
+                                </td>
+                                <td>
+                                    <div class="player-info">
+                                        <div class="player-avatar">HD</div>
+                                        <div class="player-details">
+                                            <div class="player-name">Heath Davis</div>
+                                            <div class="player-deck">Atraxa Control</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="win-loss">
+                                        <span class="wins">8</span>-<span class="losses">0</span>
+                                    </span>
+                                </td>
+                                <td><strong>24</strong></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="player-rank rank-2">2</div>
+                                </td>
+                                <td>
+                                    <div class="player-info">
+                                        <div class="player-avatar">MP</div>
+                                        <div class="player-details">
+                                            <div class="player-name">MagicPro_2024</div>
+                                            <div class="player-deck">Burn Aggro</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="win-loss">
+                                        <span class="wins">7</span>-<span class="losses">1</span>
+                                    </span>
+                                </td>
+                                <td><strong>21</strong></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="player-rank rank-other">4</div>
+                                </td>
+                                <td>
+                                    <div class="player-info">
+                                        <div class="player-avatar">DM</div>
+                                        <div class="player-details">
+                                            <div class="player-name">DeckMaster_Elite</div>
+                                            <div class="player-deck">Combo Storm</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="win-loss">
+                                        <span class="wins">6</span>-<span class="losses">2</span>
+                                    </span>
+                                </td>
+                                <td><strong>18</strong></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="player-rank rank-other">5</div>
+                                </td>
+                                <td>
+                                    <div class="player-info">
+                                        <div class="player-avatar">TC</div>
+                                        <div class="player-details">
+                                            <div class="player-name">TopCompetitor</div>
+                                            <div class="player-deck">Midrange Value</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="win-loss">
+                                        <span class="wins">6</span>-<span class="losses">2</span>
+                                    </span>
+                                </td>
+                                <td><strong>18</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="meta-analysis">
+            <div class="section-header">
+                <h2> Meta Analysis</h2>
+                <span style="color: #8b949e;">AI-powered competitive intelligence</span>
+            </div>
+
+            <div class="meta-grid">
+                <div class="meta-item">
+                    <div class="meta-deck"></div>
+                    <div class="meta-name">Atraxa Control</div>
+                    <div class="meta-percentage">24.7%</div>
+                    <div style="color: #8b949e; font-size: 0.9rem; margin-top: 0.5rem;">Meta Share</div>
+                </div>
+
+                <div class="meta-item">
+                    <div class="meta-deck"></div>
+                    <div class="meta-name">Burn Aggro</div>
+                    <div class="meta-percentage">18.3%</div>
+                    <div style="color: #8b949e; font-size: 0.9rem; margin-top: 0.5rem;">Meta Share</div>
+                </div>
+
+                <div class="meta-item">
+                    <div class="meta-deck"></div>
+                    <div class="meta-name">Control Blue</div>
+                    <div class="meta-percentage">15.8%</div>
+                    <div style="color: #8b949e; font-size: 0.9rem; margin-top: 0.5rem;">Meta Share</div>
+                </div>
+
+                <div class="meta-item">
+                    <div class="meta-deck"></div>
+                    <div class="meta-name">Combo Storm</div>
+                    <div class="meta-percentage">12.4%</div>
+                    <div style="color: #8b949e; font-size: 0.9rem; margin-top: 0.5rem;">Meta Share</div>
+                </div>
+
+                <div class="meta-item">
+                    <div class="meta-deck"></div>
+                    <div class="meta-name">Midrange Value</div>
+                    <div class="meta-percentage">11.2%</div>
+                    <div style="color: #8b949e; font-size: 0.9rem; margin-top: 0.5rem;">Meta Share</div>
+                </div>
+
+                <div class="meta-item">
+                    <div class="meta-deck"></div>
+                    <div class="meta-name">Tempo Deck</div>
+                    <div class="meta-percentage">9.8%</div>
+                    <div style="color: #8b949e; font-size: 0.9rem; margin-top: 0.5rem;">Meta Share</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function watchTournament(tournamentName) {
+            console.log(`Opening live stream for: ${tournamentName}`);
+            alert(` Live Tournament Stream\n\n${tournamentName}\n\n Live coverage with expert commentary\n Real-time match results\n Player cam and deck tech\n Interactive chat with viewers\n\nOpening stream in new window...`);
+        }
+
+        // Simulate real-time updates
+        function updateTournamentData() {
+            // Update player counts
+            const playerCounts = document.querySelectorAll('.detail-value');
+            playerCounts.forEach((count, index) => {
+                if (count.textContent.includes('Players') || Math.random() > 0.9) {
+                    count.style.transform = 'scale(1.1)';
+                    count.style.color = '#ff6b6b';
+                    setTimeout(() => {
+                        count.style.transform = 'scale(1)';
+                        count.style.color = '';
+                    }, 300);
+                }
+            });
+
+            // Update progress bars
+            const progressBars = document.querySelectorAll('.progress-fill');
+            progressBars.forEach(bar => {
+                if (Math.random() > 0.8) {
+                    const currentWidth = parseInt(bar.style.width);
+                    if (currentWidth < 95) {
+                        bar.style.width = `${currentWidth + 1}%`;
+                        bar.parentElement.previousElementSibling.querySelector('span:last-child').textContent = `${currentWidth + 1}%`;
+                    }
+                }
+            });
+        }
+
+        function updateStandings() {
+            // Simulate live standings updates
+            const standings = document.querySelectorAll('.standings-table tbody tr');
+            standings.forEach(row => {
+                if (Math.random() > 0.95) {
+                    row.style.background = 'rgba(255, 107, 107, 0.1)';
+                    setTimeout(() => {
+                        row.style.background = '';
+                    }, 1000);
+                }
+            });
+        }
+
+        function updateMetaAnalysis() {
+            // Update meta percentages
+            const metaPercentages = document.querySelectorAll('.meta-percentage');
+            metaPercentages.forEach(percentage => {
+                if (Math.random() > 0.9) {
+                    percentage.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        percentage.style.transform = 'scale(1)';
+                    }, 200);
+                }
+            });
+        }
+
+        // Start real-time updates
+        setInterval(updateTournamentData, 3000);
+        setInterval(updateStandings, 5000);
+        setInterval(updateMetaAnalysis, 8000);
+
+        // Filter functionality
+        document.querySelectorAll('.filter-select').forEach(filter => {
+            filter.addEventListener('change', function() {
+                console.log(`Filter changed: ${this.value}`);
+                // In real implementation, this would update tournament listings
+            });
+        });
+
+        // Initialize
+        console.log(' Tournament Tracker - Competition Destroyer Loaded');
+        console.log(' Active Tournaments: 847 events tracked');
+        console.log(' Players Online: 24.8K competitors');
+        console.log(' Total Prize Pools: $2.4M available');
+        console.log(' Meta Analysis: 94% accuracy with AI predictions');
+        console.log(' Target: 800K+ tournament users for capture');
+        console.log(' Live Features: Real-time results, standings, meta analysis');
+    </script>
+</body>
+</html>

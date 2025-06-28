@@ -1,0 +1,22 @@
+﻿# Environment files
+.env
+.env.local
+.env.backup*
+*.env.backup*
+
+# API Keys
+*api-key*
+*secret*
+activate-live-revenue.ps1
+
+# Node modules
+node_modules/
+npm-debug.log*
+
+# Build outputs
+dist/
+build/
+
+# IDE files
+.vscode/
+.idea/

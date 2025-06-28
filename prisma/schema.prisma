@@ -1,0 +1,72 @@
+﻿generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  portfolios    Portfolio[]
+  watchlists    Watchlist[]
+}
+
+model Card {
+  id            String    @id @default(cuid())
+  name          String
+  set           String
+  rarity        String
+  game          String    // "pokemon", "magic", "yugioh"
+  imageUrl      String?
+  currentPrice  Float
+  lastUpdated   DateTime  @default(now())
+  portfolioItems PortfolioItem[]
+  watchlistItems WatchlistItem[]
+}
+
+model Portfolio {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+  totalValue    Float     @default(0)
+  totalCost     Float     @default(0)
+  items         PortfolioItem[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model PortfolioItem {
+  id            String    @id @default(cuid())
+  portfolioId   String
+  portfolio     Portfolio @relation(fields: [portfolioId], references: [id])
+  cardId        String
+  card          Card      @relation(fields: [cardId], references: [id])
+  quantity      Int
+  purchasePrice Float
+  purchaseDate  DateTime  @default(now())
+}
+
+model Watchlist {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+  name          String
+  items         WatchlistItem[]
+  createdAt     DateTime  @default(now())
+}
+
+model WatchlistItem {
+  id            String    @id @default(cuid())
+  watchlistId   String
+  watchlist     Watchlist @relation(fields: [watchlistId], references: [id])
+  cardId        String
+  card          Card      @relation(fields: [cardId], references: [id])
+  targetPrice   Float?
+  addedAt       DateTime  @default(now())
+}
