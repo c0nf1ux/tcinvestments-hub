@@ -1,0 +1,1 @@
+module.exports=(req,res)=>{res.json({platform:"CardHood",status:"LIVE",message:"Bloomberg Terminal for Trading Cards",portfolio:"/api/portfolio",cards:"/api/cards",health:"/api/health"})};
