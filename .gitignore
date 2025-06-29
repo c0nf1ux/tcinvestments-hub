@@ -1,22 +1,131 @@
-﻿# Environment files
-.env
-.env.local
-.env.backup*
-*.env.backup*
+﻿# === BACKUP FILES (THE PROBLEM YOUR COLLABORATOR MENTIONED) ===
+*_backup*
+*_old*
+*_v2*
+*_v3*
+*_final*
+*_Final*
+*_FINAL*
+*_copy*
+*_Copy*
+*_test*
+*_temp*
+*.bak
+*.backup
+*~
+*-backup-*
+*working-backup*
 
-# API Keys
-*api-key*
-*secret*
-activate-live-revenue.ps1
-
-# Node modules
+# === NODE.JS ===
 node_modules/
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.eslintcache
 
-# Build outputs
-dist/
-build/
+# === ENVIRONMENT & SECRETS ===
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.key
+*.pem
 
-# IDE files
+# === DATABASE ===
+*.db
+*.sqlite
+*.sqlite3
+
+# === IDE & EDITOR FILES ===
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
+
+# === OPERATING SYSTEM ===
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# === LOGS ===
+logs
+*.log
+npm-debug.log*
+
+# === RUNTIME DATA ===
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# === COVERAGE DIRECTORY ===
+lib-cov
+coverage/
+.nyc_output
+
+# === DEPENDENCY DIRECTORIES ===
+jspm_packages/
+
+# === OPTIONAL NPM CACHE ===
+.npm
+
+# === OPTIONAL ESLINT CACHE ===
+.eslintcache
+
+# === MICROBUNDLE CACHE ===
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# === OPTIONAL REPL HISTORY ===
+.node_repl_history
+
+# === OUTPUT OF 'NPM PACK' ===
+*.tgz
+
+# === YARN INTEGRITY FILE ===
+.yarn-integrity
+
+# === PARCEL-BUNDLER CACHE ===
+.cache
+.parcel-cache
+
+# === NEXT.JS BUILD OUTPUT ===
+.next
+
+# === NUXT.JS BUILD OUTPUT ===
+.nuxt
+
+# === GATSBY FILES ===
+.cache/
+public
+
+# === VUEPRESS BUILD OUTPUT ===
+.vuepress/dist
+
+# === SERVERLESS DIRECTORIES ===
+.serverless/
+
+# === FUSEBOX CACHE ===
+.fusebox/
+
+# === DYNAMODB LOCAL FILES ===
+.dynamodb/
+
+# === TERNJS PORT FILE ===
+.tern-port
+
+# === VERCEL ===
+.vercel
+
+# === TEMPORARY FOLDERS ===
+tmp/
+temp/

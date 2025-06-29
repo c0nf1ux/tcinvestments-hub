@@ -1,132 +1,75 @@
-﻿#  Mega Trading Card Investment Platform
+﻿# Brainstorm TCG - AI-Powered Trading Card Platform
 
-> The Bloomberg Terminal for ALL Trading Cards
+##  Beta Launch Ready - All 7 Core APIs Operational
 
-##  Overview
+A comprehensive TCG platform with AI-powered price predictions, portfolio tracking, and deck building across Magic: The Gathering, Pokemon, Yu-Gi-Oh, and Sports Cards.
 
-The ultimate investment platform covering the entire **+ trading card market**:
+##  Current Status
+-  **7/7 Core APIs Active**
+-  **Real-time card search** (63+ Magic cards, Pokemon, Yu-Gi-Oh)
+-  **Portfolio tracking** (+ value tracking)
+-  **Tournament data** (4 upcoming events)
+-  **News feed** (5 articles)
+-  **AI Deck Builder** (Magic, Pokemon)
+-  **MongoDB Atlas** connected
+-  **Beta launch ready**
 
-- **Magic: The Gathering** (~ market)
-- **Pokemon TCG** (~ market)
-- **Yu-Gi-Oh!** (~.2B market)
-- **Sports Cards** (~ market - Baseball, Football, Basketball, Hockey, Soccer)
+##  Tech Stack
+- **Backend**: Node.js, Express.js, MongoDB Atlas
+- **APIs**: Scryfall (Magic), Pokemon TCG API, YGOPRODeck
+- **Frontend**: HTML5, Vanilla JS, CSS3
+- **Deployment**: Vercel (frontend), MongoDB Atlas (database)
 
-##  Features
+##  Project Structure
+C:\Brainstorm\
+ server/
+    server.js (7 endpoints, all working)
+    package.json
+    .env (MongoDB connection)
+ pure-html/
+    index.html (main platform)
+    search.html (card search)
+    tournaments.html (tournament data)
+    trading-dashboard.html (portfolio)
+    deck-builder.html (AI deck building)
+ README.md
 
-###  Investment Analytics
-- Real-time pricing from multiple sources
-- Portfolio performance tracking
-- Price change analytics (24h, 7d, 30d, 1y)
-- Investment grade ratings
-- Risk analytics and volatility scoring
-
-###  Universal Card Support
-- **MTG**: Scryfall integration, mana costs, card types
-- **Pokemon**: HP, attacks, types, evolution chains
-- **Yu-Gi-Oh**: ATK/DEF, levels, archetypes
-- **Sports**: Player stats, rookie cards, autographs, memorabilia
-
-###  Portfolio Management
-- Multi-game collection tracking
-- Cost basis and P&L calculations
-- Condition-based pricing
-- Trade and sale management
-- Tax reporting (FIFO/LIFO)
-
-###  Data Sources
-- Scryfall (MTG)
-- Pokemon TCG API
-- TCGPlayer pricing
-- eBay sold listings
-- Card shop buylist prices
-
-##  Installation
-
-\\\powershell
-# Clone repository
-git clone https://github.com/c0nflux/mega-trading-card-platform.git
-cd mega-trading-card-platform
-
-# Run complete setup
-.\Deploy-Mega-Platform.ps1 -DeployAll
-
-# Or manual installation
+##  Development Setup
+# Backend
+cd server
 npm install
-npm run setup
-npm run migrate:all
 npm start
-\\\
+
+# Frontend  
+cd pure-html
+python -m http.server 8080
 
 ##  API Endpoints
+- GET /api/search?query=lightning&tcg=magic - Card search
+- GET /api/portfolio/summary - Portfolio data
+- GET /api/tournaments - Tournament events
+- GET /api/news - News feed
+- POST /api/deck-builder/suggest - AI deck building
+- GET /api/database/status - System health
+- GET /health - Server health check
 
-### Universal Search
-\\\
-GET /api/cards/search?q=charizard&game=pokemon
-GET /api/cards/search?q=black+lotus&game=mtg
-GET /api/cards/search?q=mike+trout&game=baseball
-\\\
+##  Beta Launch Goals
+- **Target**: 50 beta users from TCG communities
+- **Communities**: r/mtgfinance, r/PokemonTCG, r/yugioh
+- **Timeline**: 7 days to beta launch
+- **Revenue target**:  MRR within 30 days
 
-### Portfolio Analytics
-\\\
-GET /api/portfolio/summary
-GET /api/cards/trending
-GET /api/market/overview
-\\\
-
-### Collection Management
-\\\
-POST /api/collection/add
-PUT /api/collection/update
-DELETE /api/collection/remove
-\\\
-
-##  Database Schema
-
-Unified card model supporting all trading card types with game-specific data fields and universal investment analytics.
+##  Collaboration Guidelines
+- **No backup files** - Git handles version control
+- **Work in separate branches** for features
+- **Pull requests** for all changes to main
+- **Test locally** before pushing
+- **Document API changes** in this README
 
 ##  Deployment
+- **Frontend**: Deployed via Vercel
+- **Backend**: MongoDB Atlas cloud database
+- **Domain**: tcinvestments.net (pending SSL)
 
-### Development
-\\\ash
-npm run dev
-\\\
-
-### Production
-\\\ash
-npm run deploy:production
-\\\
-
-##  Market Opportunity
-
-| Game Type | Market Size | Our Opportunity |
-|-----------|-------------|-----------------|
-| MTG |  | First serious investment platform |
-| Pokemon |  | Largest TCG market |
-| Yu-Gi-Oh | .2B | Underserved analytics market |
-| Sports Cards |  | Massive growth potential |
-| **Total TAM** | **+** | **Multi-billion dollar opportunity** |
-
-##  Competitive Advantages
-
-1. **Only unified platform** covering all major TCGs
-2. **Investment-first design** with Bloomberg-style analytics
-3. **Professional-grade** portfolio management
-4. **Multi-source pricing** for accuracy
-5. **Tax integration** for serious investors
-
-##  Revenue Streams
-
-- **Freemium subscriptions** (.99-.99/month)
-- **Transaction fees** on marketplace sales
-- **API licensing** to card shops and dealers
-- **Premium analytics** for institutional clients
-- **Data syndication** to financial platforms
-
-##  Contact
-
-- **GitHub**: [@c0nflux](https://github.com/c0nflux)
-- **Platform**: [Mega Trading Card Platform](https://github.com/c0nflux/mega-trading-card-platform)
-
----
-
-*Building the financial infrastructure for the trading card ecosystem* 
+Last Updated: 2025-06-28 18:58 PST
+Status: All systems operational, beta launch ready
